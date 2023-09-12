@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameLauncher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="login" Height="450" Width="800">
     <Grid>
+        <Canvas Margin="260,130,260,120" Background="DarkGray" RenderTransformOrigin="0.5,0.5" MinWidth="260" MinHeight="130" >
+            <Label Content="Login to Game Launcher" Height="33" Width="144" Canvas.Left="71" Canvas.Top="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Name="btnLogin" Content="Login" Canvas.Left="44" Canvas.Top="118" Height="45" Width="192" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Name="txtUsername" TextWrapping="Wrap" Text="Username" Width="120" Canvas.Left="80" Canvas.Top="48" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <TextBox Name="txtPassword" TextWrapping="Wrap" Text="Password" Width="120" Canvas.Left="80" Canvas.Top="80" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        </Canvas>
 
     </Grid>
 </Window>
