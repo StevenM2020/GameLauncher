@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameLauncher"
         mc:Ignorable="d"
-        Title="login" Height="450" Width="800">
-    <Grid>
+        Title="login" Height="481" Width="800" ResizeMode="NoResize">
+    <Grid Background="#FF353535">
         <Canvas Margin="260,130,260,120" Background="DarkGray" RenderTransformOrigin="0.5,0.5" MinWidth="260" MinHeight="130" >
-            <Label Content="Login to Game Launcher" Height="33" Width="144" Canvas.Left="71" Canvas.Top="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Name="btnLogin" Content="Login" Canvas.Left="44" Canvas.Top="118" Height="45" Width="192" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Name="lblTitle" Content="Login to Game Launcher" Height="33" Width="144" Canvas.Left="71" Canvas.Top="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Name="btnContinue" Content="Login" Canvas.Left="60" Canvas.Top="110" Height="35" Width="160" HorizontalAlignment="Left" VerticalAlignment="Top" Click="btnLogin_Click"/>
             <TextBox Name="txtUsername" TextWrapping="Wrap" Text="Username" Width="120" Canvas.Left="80" Canvas.Top="48" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             <TextBox Name="txtPassword" TextWrapping="Wrap" Text="Password" Width="120" Canvas.Left="80" Canvas.Top="80" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Label Name="lblOption" Content="Dont have an account? Sign Up" Height="33" Width="214" Canvas.Left="48" Canvas.Top="145" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FF6D6D6D" MouseDown="lblOption_MouseDown" MouseEnter="lblOption_MouseEnter" MouseLeave="lblOption_MouseLeave"/>
         </Canvas>
 
     </Grid>
