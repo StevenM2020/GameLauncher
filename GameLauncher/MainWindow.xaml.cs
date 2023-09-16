@@ -71,9 +71,29 @@ namespace GameLauncher
 
         }
         private void btnSignUp_Click(object sender, RoutedEventArgs e)
-        { 
+        {
+            MongoClient dbClient = new MongoClient(connectionUri);
+            var database = dbClient.GetDatabase("GameLauncher");
+            var collection = database.GetCollection<BsonDocument>("Users");
+
+            var document = new BsonDocument
+            {
+                {"username", txtUsername.Text},
+                {"password", txtPassword.Text},
+                {"developer", false}
+            };
+
+            collection.InsertOne(document);
+
             MessageBox.Show("Sign Up not coded");
         }
+
+
+
+
+
+
+
 
             private void hold()
         {
