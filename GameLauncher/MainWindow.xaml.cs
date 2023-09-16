@@ -58,21 +58,20 @@ namespace GameLauncher
             }
 
 
-
-
-
-
-
-
-
-
-
-
-
         }
         private void btnSignUp_Click(object sender, RoutedEventArgs e)
         {
             MongoClient dbClient = new MongoClient(connectionUri);
+            var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
+            var filter = Builders<BsonDocument>.Filter.Eq("username", txtUsername.Text);
+            var result = dbList.Find(filter).ToList();
+
+            if(result.Count > 0)
+            {
+                MessageBox.Show("Username already exists");
+                return;
+            }
+
             var database = dbClient.GetDatabase("GameLauncher");
             var collection = database.GetCollection<BsonDocument>("Users");
 
@@ -85,14 +84,8 @@ namespace GameLauncher
 
             collection.InsertOne(document);
 
-            MessageBox.Show("Sign Up not coded");
+            MessageBox.Show("Sign Up Successful");
         }
-
-
-
-
-
-
 
 
             private void hold()
@@ -134,12 +127,6 @@ namespace GameLauncher
                     };
             collection.InsertOne(document2);
             MessageBox.Show("User Created");
-
-
-
-
-
-
 
 
         }
