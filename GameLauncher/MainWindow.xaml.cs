@@ -178,10 +178,22 @@ namespace GameLauncher
 
         private void lblOption_MouseEnter(object sender, MouseEventArgs e)
         {
-            lblOption.FontWeight = FontWeights.Bold;
+            lblOption.Foreground = new SolidColorBrush(Colors.White);
+            
         }
 
         private void lblOption_MouseLeave(object sender, MouseEventArgs e)
+        {
+            lblOption.Foreground = new SolidColorBrush(Colors.Gray);
+        }
+
+
+        private void MouseOvertext(object sender, MouseEventArgs e)
+        {
+            lblOption.FontWeight = FontWeights.Bold;
+        }
+
+        private void MouseOffText(object sender, MouseEventArgs e)
         {
             lblOption.FontWeight = FontWeights.Regular;
         }
