@@ -8,7 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Screenshot 2023-09-21 134326 %28Medium%29.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Screenshot 2023-09-21 134326 (Medium).png" />
   </ItemGroup>
 
 </Project>

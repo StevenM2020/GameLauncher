@@ -6,72 +6,93 @@
         xmlns:local="clr-namespace:GameLauncher"
         mc:Ignorable="d"
         Title="Launcher" Height="450" Width="800">
-    <Grid>
+    <Grid Background="#FF292929">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
 
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Store" HorizontalAlignment="Center" Margin="0,57,0,0" VerticalAlignment="Top" Width="100" Height="29"/>
-            <Button Content="Library" HorizontalAlignment="Center" Margin="0,91,0,0" VerticalAlignment="Top" Width="100" Height="29"/>
-            <Button Content="Game Dev" HorizontalAlignment="Center" Margin="0,125,0,0" VerticalAlignment="Top" Width="100" Height="29"/>
-
-                <Image Grid.Column="1" HorizontalAlignment="Left" Height="255" Margin="93,14,0,0" VerticalAlignment="Top" Width="368" Source="C:\Users\steve\Downloads\20230921_061044.jpg" />
-
-            <ListBox Grid.Column="1" Margin="459,14,82,165" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden" >
-                <Grid Background="Gray">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50"/>
-
-                        <ColumnDefinition Width="100"/>
-
-
-                    </Grid.ColumnDefinitions>
-
-                    <Image Grid.ColumnSpan="1" HorizontalAlignment="Left" Height="37.5" Margin="1,2.5,0,0" VerticalAlignment="Top" Width="50" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-                    <Button Grid.Column="2" Content="Game Name 1" Height="35" Background="Gray">
-
-                    </Button>
-                </Grid>
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50"/>
-
-                        <ColumnDefinition Width="100"/>
+            <Button Grid.Column="0" Content="Store" HorizontalAlignment="Center" Margin="5,55,0,0" VerticalAlignment="Top" Width="100" Height="29" Click="Button_Click" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
+                <Button.Clip>
+                    <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"/>
+                </Button.Clip>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="#FF292929"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Black"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Grid.Column="0" Content="Library" HorizontalAlignment="Center" Margin="5,90,0,0" VerticalAlignment="Top" Width="100" Height="29" Click="Button_Click" Background="#FF292929" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
+                <Button.Clip>
+                    <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"  />
+                </Button.Clip>
+            </Button>
+            <Button Grid.Column="0" Content="Game Dev" HorizontalAlignment="Left" Margin="5,125,0,0" VerticalAlignment="Top" Width="100" Height="29" Click="Button_Click" Background="#FF292929" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
+                <Button.Clip>
+                    <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"  />
+                </Button.Clip>
+            </Button>
 
 
-                    </Grid.ColumnDefinitions>
-
-                    <Image Grid.ColumnSpan="1" HorizontalAlignment="Left" Height="30" VerticalAlignment="Top" Width="50" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-                    <Button Grid.Column="2" Content="Game Name 2">
-
-                    </Button>
-                </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50"/>
-
-                        <ColumnDefinition Width="100"/>
+            <Border Grid.Column="1" Background="#FF202020" RenderTransformOrigin="0.5,0.5" MinWidth="280" MinHeight="120" Height="300" Margin="10,10,10,0" VerticalAlignment="Top" CornerRadius="10">
+                <Canvas>
+                    <Grid Name ="grdShowCase" Column="1" HorizontalAlignment="Center" Height="300" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="440"/>
+                            <ColumnDefinition Width="150"/>
+                        </Grid.ColumnDefinitions>
 
 
-                    </Grid.ColumnDefinitions>
 
-                    <Image Grid.ColumnSpan="1" HorizontalAlignment="Left" Height="30" VerticalAlignment="Top" Width="50" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-                    <Button Grid.Column="2" Content="Game Name 3">
+                        <Image Name="imgShowCase" Grid.Column="0" Source="/Screenshot 2023-09-21 134326 (Medium).png" Height="260" Width="400" VerticalAlignment="Center" Stretch="UniformToFill">
+                            <Image.Clip>
+                                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,400,260" />
+                            </Image.Clip>
+                        </Image>
 
-                    </Button>
-                </Grid>
-            </ListBox>
-            <Label Grid.Column="1" Content="Game Name" HorizontalAlignment="Left" Margin="103,206,0,0" VerticalAlignment="Top" Background="#FF616161"/>
-            <Label Grid.Column="1" Content="Short Game Info " HorizontalAlignment="Left" Margin="103,237,0,0" VerticalAlignment="Top" Background="#FF616161"/>
-            <Image Grid.Column="1" HorizontalAlignment="Left" Height="102" Margin="93,319,0,0" VerticalAlignment="Top" Width="142" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-            <Image Grid.Column="1" HorizontalAlignment="Left" Height="102" Margin="240,319,0,0" VerticalAlignment="Top" Width="142" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-            <Image Grid.Column="1" HorizontalAlignment="Left" Height="102" Margin="387,319,0,0" VerticalAlignment="Top" Width="142" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-            <Label Content="Quick Launch" HorizontalAlignment="Center" Margin="0,178,0,0" VerticalAlignment="Top"/>
+                        <Label Grid.Column="0" Content="Game Name" HorizontalAlignment="Left" Margin="27,202,0,0" VerticalAlignment="Top" Background="#FF616161"/>
+                        <Label Grid.Column="0" Content="Short Game Info " HorizontalAlignment="Left" Margin="27,239,0,0" VerticalAlignment="Top" Background="#FF616161"/>
+
+
+                    </Grid>
+
+                </Canvas>
+            </Border>
+
+
+            <Label Content="Quick Launch" HorizontalAlignment="Center" Margin="0,178,0,0" VerticalAlignment="Top" Foreground="White"/>
             <Image HorizontalAlignment="Left" Height="32" Margin="9,207,0,0" VerticalAlignment="Top" Width="34" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-            <Label Content="Game" HorizontalAlignment="Left" Margin="48,206,0,0" VerticalAlignment="Top" Height="30" Width="52"/>
+            <Label Content="Game" HorizontalAlignment="Left" Margin="48,206,0,0" VerticalAlignment="Top" Height="30" Width="52" Foreground="White"/>
+            <Grid Name="grdStore"  Grid.Column="1" Margin="50,326,50,-217" Width="600">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+
+                    <ColumnDefinition Width="150"/>
+
+                    <ColumnDefinition Width="150"/>
+
+                    <ColumnDefinition Width="150"/>
+
+
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+
+
+
+            </Grid>
+            <ScrollBar Grid.Column="1" HorizontalAlignment="Right" Margin="688,0,0,0" VerticalAlignment="Center" Height="432" Background="{x:Null}"/>
+
+
+
         </Grid>
 
 

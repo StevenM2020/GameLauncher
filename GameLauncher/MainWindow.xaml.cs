@@ -15,6 +15,11 @@ using System.Windows.Shapes;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using System.Windows.Interop;
+using System.IO;
+using System.Windows.Markup;
+using System.Xml;
+
+
 
 namespace GameLauncher
 {
@@ -32,16 +37,24 @@ namespace GameLauncher
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
+            Launcher launcher = new Launcher();
+            launcher.Left = this.Left;
+            launcher.Top = this.Top;
+            launcher.Show();
+            this.Close();
+            return;
 
+            // Connect to the database
             MongoClient dbClient = new MongoClient(connectionUri);
+            // Get the collection of users and filter by username
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
             var filter = Builders<BsonDocument>.Filter.Eq("username", txtUsername.Text);
             var result = dbList.Find(filter).ToList();
             //MessageBox.Show(result[0]["password"].ToString());
 
-            if (result.Count > 0)
+            if (result.Count > 0) // check if the username is found
             {
-                if (result[0]["password"].ToString() == txtPassword.Text)
+                if (result[0]["password"].ToString() == txtPassword.Text) // check if the password is correct
                 {
                     MessageBox.Show("Login Successful");
                     // code to login the user will go here
@@ -49,45 +62,54 @@ namespace GameLauncher
                 else
                 {
                     MessageBox.Show("Incorrect Password");
+                    return;
                 }
             }
-            else
+            else // if the username is not found
             {
                 MessageBox.Show("Incorrect Username");
-
+                return;
             }
+
+            // Create a new launcher window and close the current window
+
 
 
         }
         private void btnSignUp_Click(object sender, RoutedEventArgs e)
         {
+            // Connect to the database
             MongoClient dbClient = new MongoClient(connectionUri);
+            // Get the collection of users and filter by username
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
             var filter = Builders<BsonDocument>.Filter.Eq("username", txtUsername.Text);
             var result = dbList.Find(filter).ToList();
 
-            if(result.Count > 0)
+            if(result.Count > 0) // check if the username is found
             {
                 MessageBox.Show("Username already exists");
                 return;
             }
 
+            // Create a new document and insert it into the database
             var database = dbClient.GetDatabase("GameLauncher");
             var collection = database.GetCollection<BsonDocument>("Users");
 
+            
             var document = new BsonDocument
             {
                 {"username", txtUsername.Text},
                 {"password", txtPassword.Text},
                 {"developer", false}
             };
-
+          
             collection.InsertOne(document);
 
             MessageBox.Show("Sign Up Successful");
         }
 
 
+        // just for testing purposes
             private void hold()
         {
             MongoClient dbClient = new MongoClient("mongodb+srv://Steven:UBdlX3HpQqXqHiNi@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority");
@@ -132,6 +154,7 @@ namespace GameLauncher
         }
 
 
+            // just for testing purposes
         private void ping()
         {
             const string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
@@ -155,7 +178,7 @@ namespace GameLauncher
 
         }
 
-
+        // change the text of the label and the button when the user clicks on it
         private void lblOption_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (blnLogin) {
@@ -176,12 +199,14 @@ namespace GameLauncher
             blnLogin = !blnLogin;
         }
 
+        // change the color of the label when the user hovers over it
         private void lblOption_MouseEnter(object sender, MouseEventArgs e)
         {
             lblOption.Foreground = new SolidColorBrush(Colors.White);
             
         }
-
+        
+        // change the color of the label when the user leaves it
         private void lblOption_MouseLeave(object sender, MouseEventArgs e)
         {
             lblOption.Foreground = new SolidColorBrush(Colors.Gray);
@@ -196,6 +221,43 @@ namespace GameLauncher
         private void MouseOffText(object sender, MouseEventArgs e)
         {
             lblOption.FontWeight = FontWeights.Regular;
+        }
+
+
+
+        // code for speech
+        const string ConnectionString = "connection string goes here";
+
+        private void SignUpButton(object sender, RoutedEventArgs e)
+        {
+            MongoClient dbClient = new MongoClient(ConnectionString);
+            var dbList = 
+                dbClient.GetDatabase("MyDataBase").GetCollection<BsonDocument>("Users");
+            var filter = Builders<BsonDocument>.Filter.Eq("username", txtUsername.Text);
+            var result = dbList.Find(filter).ToList();
+
+            if (result.Count > 0)
+            {
+                MessageBox.Show("Username already exists");
+                return;
+            }
+
+
+            var document = new BsonDocument
+            {
+                {"username", txtUsername.Text},
+                {"password", txtPassword.Text},
+                {"developer", false}
+            };
+
+
+
+            var database = dbClient.GetDatabase("MyDataBase");
+            var collection = database.GetCollection<BsonDocument>("Users");
+            collection.InsertOne(document);
+
+            MessageBox.Show("Sign Up Successful");
+
         }
     }
 }
