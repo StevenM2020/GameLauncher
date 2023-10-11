@@ -16,8 +16,12 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using System.Windows.Interop;
 using System.IO;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Markup;
 using System.Xml;
+
+
 
 
 
@@ -30,6 +34,14 @@ namespace GameLauncher
     {
         const string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
         bool blnLogin = true;
+
+        // Hashing variables
+        const int keySize = 64;
+        const int iterations = 350000;
+        HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
+        byte[] salt = new byte[32] { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,12 +49,9 @@ namespace GameLauncher
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            Launcher launcher = new Launcher();
-            launcher.Left = this.Left;
-            launcher.Top = this.Top;
-            launcher.Show();
-            this.Close();
-            return;
+
+            if (ValidInput())
+                return;
 
             // Connect to the database
             MongoClient dbClient = new MongoClient(connectionUri);
@@ -52,9 +61,11 @@ namespace GameLauncher
             var result = dbList.Find(filter).ToList();
             //MessageBox.Show(result[0]["password"].ToString());
 
+            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(txtPassword.Text, salt, iterations, hashAlgorithm, keySize);
+
             if (result.Count > 0) // check if the username is found
             {
-                if (result[0]["password"].ToString() == txtPassword.Text) // check if the password is correct
+                if (result[0]["password"].ToString() == Convert.ToHexString(hashedPassword)) // check if the password is correct
                 {
                     MessageBox.Show("Login Successful");
                     // code to login the user will go here
@@ -73,11 +84,19 @@ namespace GameLauncher
 
             // Create a new launcher window and close the current window
 
-
+            Launcher launcher = new Launcher();
+            launcher.Left = this.Left;
+            launcher.Top = this.Top;
+            launcher.Show();
+            this.Close();
+            return;
 
         }
         private void btnSignUp_Click(object sender, RoutedEventArgs e)
         {
+            if (ValidInput())
+                return;
+
             // Connect to the database
             MongoClient dbClient = new MongoClient(connectionUri);
             // Get the collection of users and filter by username
@@ -95,11 +114,23 @@ namespace GameLauncher
             var database = dbClient.GetDatabase("GameLauncher");
             var collection = database.GetCollection<BsonDocument>("Users");
 
+
+            //var salt = RandomNumberGenerator.GetBytes(32);
+            // reliable salt
+            //for (int i = 0; i < 32; i++)
+            //{
+            //    salt[i] = 0;
+            //}
+            
+            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(txtPassword.Text, salt, iterations, hashAlgorithm, keySize);
+            //MessageBox.Show(Convert.ToHexString(hashedPassword));
+
+            // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
             
             var document = new BsonDocument
             {
                 {"username", txtUsername.Text},
-                {"password", txtPassword.Text},
+                {"password", Convert.ToHexString(hashedPassword)},
                 {"developer", false}
             };
           
@@ -213,51 +244,55 @@ namespace GameLauncher
         }
 
 
-        private void MouseOvertext(object sender, MouseEventArgs e)
+
+
+
+        // removes the places holder text when the user clicks on the textbox
+        private void txtBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            lblOption.FontWeight = FontWeights.Bold;
+            var txtBox = (TextBox)sender;
+            if (txtBox.Name == "txtUsername" && txtBox.Text == "Username")
+                txtBox.Text = "";
+            else if(txtBox.Name == "txtPassword" && txtBox.Text == "Password")
+                txtBox.Text = "";
+            
         }
 
-        private void MouseOffText(object sender, MouseEventArgs e)
+        // adds the places holder text when the user leaves the textbox
+        private void txtBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            lblOption.FontWeight = FontWeights.Regular;
+            var txtBox = (TextBox)sender;
+            if (txtBox.Name == "txtUsername" && txtBox.Text == "")
+                txtBox.Text = "Username";
+            else if (txtBox.Name == "txtPassword" && txtBox.Text == "")
+                txtBox.Text = "Password";
         }
 
-
-
-        // code for speech
-        const string ConnectionString = "connection string goes here";
-
-        private void SignUpButton(object sender, RoutedEventArgs e)
+        private bool ValidInput()
         {
-            MongoClient dbClient = new MongoClient(ConnectionString);
-            var dbList = 
-                dbClient.GetDatabase("MyDataBase").GetCollection<BsonDocument>("Users");
-            var filter = Builders<BsonDocument>.Filter.Eq("username", txtUsername.Text);
-            var result = dbList.Find(filter).ToList();
-
-            if (result.Count > 0)
+            // check if the user entered a username and password
+            if (txtUsername.Text == "Username" || txtPassword.Text == "Password")
             {
-                MessageBox.Show("Username already exists");
-                return;
+                MessageBox.Show("Please enter a username and password");
+                return true;
             }
 
-
-            var document = new BsonDocument
+            //check if the user entered anything but letters and numbers
+            if (txtUsername.Text.Any(c => !char.IsLetterOrDigit(c)))
             {
-                {"username", txtUsername.Text},
-                {"password", txtPassword.Text},
-                {"developer", false}
-            };
+                MessageBox.Show("Please enter a valid username");
+                return true;
+            }
 
+            if (txtPassword.Text.Any(c => !char.IsLetterOrDigit(c)))
+            {
+                MessageBox.Show("Please enter a valid password");
+                return true;
+            }
 
-
-            var database = dbClient.GetDatabase("MyDataBase");
-            var collection = database.GetCollection<BsonDocument>("Users");
-            collection.InsertOne(document);
-
-            MessageBox.Show("Sign Up Successful");
-
+            // https://learn.microsoft.com/en-us/dotnet/api/system.char.isletterordigit?view=net-7.0
+            // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions
+            return false;
         }
     }
 }
