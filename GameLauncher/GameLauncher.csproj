@@ -8,7 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="GameLauncherIcon.png" />
+    <None Remove="GameLauncherIconBlackController.png" />
+    <None Remove="GameLauncherIconControler.png" />
+    <None Remove="GameLauncherIconControler1.png" />
+    <None Remove="OIG.r0dgwL8HIYIeR8zNL.jpeg" />
     <None Remove="Screenshot 2023-09-21 134326 %28Medium%29.png" />
+    <None Remove="SplashScreen.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +22,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="GameLauncherIcon.png" />
+    <Resource Include="GameLauncherIconBlackController.png" />
+    <Resource Include="GameLauncherIconControler.png" />
+    <Resource Include="GameLauncherIconControler1.png" />
+    <Resource Include="OIG.r0dgwL8HIYIeR8zNL.jpeg" />
     <Resource Include="Screenshot 2023-09-21 134326 (Medium).png" />
   </ItemGroup>
+
+  <!--<ItemGroup>
+    <SplashScreen Include="SplashScreen.png" />
+  </ItemGroup>-->
 
 </Project>

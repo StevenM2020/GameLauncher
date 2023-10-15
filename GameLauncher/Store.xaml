@@ -1,14 +1,15 @@
-﻿<Window x:Class="GameLauncher.Launcher"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GameLauncher"
-        mc:Ignorable="d"
-        Title="Launcher" Height="450" Width="800" ResizeMode="NoResize" SizeToContent="Width">
+﻿<Page x:Class="GameLauncher.Store"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GameLauncher"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Store">
+
     <Grid Background="#FF292929">
-        
-            <Grid>
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
 
@@ -64,7 +65,7 @@
                         <StackPanel Name="pnlShowCaseGames" Grid.Column="1" Margin="0,15,0,15">
                             <Canvas Height="80" Background="#FF202020">
                                 <Canvas.Clip>
-                                        <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,5,190,75"  />
+                                    <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,5,190,75"  />
                                 </Canvas.Clip>
 
                                 <Grid>
@@ -114,10 +115,10 @@
             </Grid>
             <ScrollBar Grid.Column="1" HorizontalAlignment="Right" Margin="688,0,0,0" VerticalAlignment="Center" Height="432" Background="{x:Null}"/>
 
-            <Frame Grid.Column="1" Name="somethingFrame"></Frame>
+
 
         </Grid>
 
-        
+
     </Grid>
-</Window>
+</Page>

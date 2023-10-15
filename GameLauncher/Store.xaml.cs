@@ -3,7 +3,6 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,37 +10,35 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace GameLauncher
 {
     /// <summary>
-    /// Interaction logic for Launcher.xaml
+    /// Interaction logic for Store.xaml
     /// </summary>
-    public partial class Launcher : Window
+    public partial class Store : Page
     {
         const string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
-        List <FeaturedGames> featuredGames = new List<FeaturedGames>();
+        List<FeaturedGames> featuredGames = new List<FeaturedGames>();
 
-        public Launcher()
+        public Store()
         {
             InitializeComponent();
 
             MongoClient dbClient = new MongoClient(connectionUri);
             // Get the collection of users and filter by username
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Games");
-            
+
             //MessageBox.Show(dbList.Find(new BsonDocument()).ToList().Count.ToString());
 
             int intNumGames = dbList.Find(new BsonDocument()).ToList().Count;
 
             int intGamesLeft = intNumGames;
-            for(int j = 0; j <= intNumGames/4; j++)
+            for (int j = 0; j <= intNumGames / 4; j++)
             {
                 // how many columns will bb in this row
                 int intNumCol = intGamesLeft >= 4 ? 4 : intGamesLeft;
@@ -66,8 +63,8 @@ namespace GameLauncher
                     // get game data from database
                     try
                     {
-                        gameImage = new BitmapImage( new Uri( dbList.Find(new BsonDocument()).ToList()[i + j*4]["images"][0].ToString())); // validates image
-                        gameName = dbList.Find(new BsonDocument()).ToList()[i + j*4]["name"].ToString();
+                        gameImage = new BitmapImage(new Uri(dbList.Find(new BsonDocument()).ToList()[i + j * 4]["images"][0].ToString())); // validates image
+                        gameName = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["name"].ToString();
                         //gameDescription = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["description"].ToString();
                         gameID = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["_id"].ToString();
                     }
@@ -112,7 +109,7 @@ namespace GameLauncher
 
                     //MessageBox.Show(gameName);
 
-                    
+
                 }
 
 
@@ -128,17 +125,12 @@ namespace GameLauncher
 
                 foreach (var game in result)
                 {
-                    
+
                 }
 
                 //this.Content = new SignUp();
                 // https://stackoverflow.com/questions/10196445/switch-views-in-same-window-wpf-without-creating-new-instances-of-the-pages#:~:text=Much%20easier%20way%20would%20be%3A%201%20Use%20MainWindow,instances%29.%204%20Use%20MainWindow.SetPage%20%28Pages.First%29%20to%20change%20pages.
             }
-        }
-
-        public void SetPage(Page page)
-        {
-           this.Content = page;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -149,15 +141,15 @@ namespace GameLauncher
         private async void ChangeFeaturedGame()
         {
             while (true)
-            { 
+            {
                 await Task.Delay(5000);
-            btnStore.Content = "Loading...";
-            await Task.Delay(5000);
-            btnStore.Content = "Loading..";
-            await Task.Delay(5000);
-            btnStore.Content = "Loading.";
-            await Task.Delay(5000);
-            btnStore.Content = "Loading";
+                btnStore.Content = "Loading...";
+                await Task.Delay(5000);
+                btnStore.Content = "Loading..";
+                await Task.Delay(5000);
+                btnStore.Content = "Loading.";
+                await Task.Delay(5000);
+                btnStore.Content = "Loading";
 
             }
             return;
@@ -168,13 +160,7 @@ namespace GameLauncher
         {
             var imgGame = (System.Windows.Controls.Image)sender;
             //MessageBox.Show(imgGame.Tag.ToString());
-
-            //this.Content = new GameView();
-            somethingFrame.NavigationService.Navigate(new test());
-            somethingFrame.NavigationService.RemoveBackEntry();
-            somethingFrame.NavigationUIVisibility = NavigationUIVisibility.Hidden;
-
-
+            this.Content = new GameView();
         }
 
         struct FeaturedGames
