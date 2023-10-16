@@ -22,13 +22,15 @@ namespace GameLauncher
     /// </summary>
     public partial class Store : Page
     {
-        const string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
-        List<FeaturedGames> featuredGames = new List<FeaturedGames>();
+        const string connectionUri =
+            "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
 
-        public Store()
+        List<FeaturedGames> featuredGames = new List<FeaturedGames>();
+        private Launcher launcher;
+        public Store(Launcher launcher1)
         {
             InitializeComponent();
-
+            launcher = launcher1;
             MongoClient dbClient = new MongoClient(connectionUri);
             // Get the collection of users and filter by username
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Games");
@@ -63,7 +65,9 @@ namespace GameLauncher
                     // get game data from database
                     try
                     {
-                        gameImage = new BitmapImage(new Uri(dbList.Find(new BsonDocument()).ToList()[i + j * 4]["images"][0].ToString())); // validates image
+                        gameImage = new BitmapImage(
+                            new Uri(dbList.Find(new BsonDocument()).ToList()[i + j * 4]["images"][0]
+                                .ToString())); // validates image
                         gameName = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["name"].ToString();
                         //gameDescription = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["description"].ToString();
                         gameID = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["_id"].ToString();
@@ -119,7 +123,7 @@ namespace GameLauncher
 
                 if (result.Count == 0)
                 {
-                    MessageBox.Show("no featured games");
+                   // MessageBox.Show("no featured games");
                     return;
                 }
 
@@ -133,6 +137,11 @@ namespace GameLauncher
             }
         }
 
+        public void SetPage(Page page)
+        {
+            this.Content = page;
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -143,15 +152,9 @@ namespace GameLauncher
             while (true)
             {
                 await Task.Delay(5000);
-                btnStore.Content = "Loading...";
-                await Task.Delay(5000);
-                btnStore.Content = "Loading..";
-                await Task.Delay(5000);
-                btnStore.Content = "Loading.";
-                await Task.Delay(5000);
-                btnStore.Content = "Loading";
 
             }
+
             return;
         }
         //https://stackoverflow.com/questions/43951923/wpf-async-await
@@ -160,7 +163,12 @@ namespace GameLauncher
         {
             var imgGame = (System.Windows.Controls.Image)sender;
             //MessageBox.Show(imgGame.Tag.ToString());
-            this.Content = new GameView();
+
+            //this.Content = new GameView();
+
+            
+            launcher.GoTo(new GameView(gameId: imgGame.Tag.ToString()));
+
         }
 
         struct FeaturedGames

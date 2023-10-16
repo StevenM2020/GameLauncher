@@ -19,9 +19,11 @@ namespace GameLauncher
     /// </summary>
     public partial class GameView : Page
     {
-        public GameView()
+        public GameView(string gameId)
         {
             InitializeComponent();
+
+            lblTest.Content = gameId;
         }
 
         private void btnStore_Click(object sender, RoutedEventArgs e)
