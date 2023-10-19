@@ -277,7 +277,7 @@ namespace GameLauncher
                 return true;
             }
 
-            //check if the user entered anything but letters and numbers
+            //check if the user entered anything but letters and
             if (txtUsername.Text.Any(c => !char.IsLetterOrDigit(c)))
             {
                 MessageBox.Show("Please enter a valid username");
@@ -290,6 +290,7 @@ namespace GameLauncher
                 return true;
             }
 
+            // https://stackoverflow.com/questions/76413133/char-check-that-contains-letters-and-digits
             // https://learn.microsoft.com/en-us/dotnet/api/system.char.isletterordigit?view=net-7.0
             // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions
             return false;

@@ -56,6 +56,10 @@ namespace GameLauncher
                 grdStore.RowDefinitions.Add(row0);
                 grdStore.RowDefinitions.Add(row1);
 
+                List<string> gameUris = new List<string>();
+                List<string> gameNames = new List<string>();
+                List<string> gameDescriptions = new List<string>();
+                List<string> gameIDs = new List<string>();
 
                 for (int i = 0; i < intNumCol; i++)
                 {
@@ -65,9 +69,7 @@ namespace GameLauncher
                     // get game data from database
                     try
                     {
-                        gameImage = new BitmapImage(
-                            new Uri(dbList.Find(new BsonDocument()).ToList()[i + j * 4]["images"][0]
-                                .ToString())); // validates image
+                        gameImage = new BitmapImage(new Uri(dbList.Find(new BsonDocument()).ToList()[i + j * 4]["images"][0].ToString())); // validates image
                         gameName = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["name"].ToString();
                         //gameDescription = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["description"].ToString();
                         gameID = dbList.Find(new BsonDocument()).ToList()[i + j * 4]["_id"].ToString();

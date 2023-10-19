@@ -7,9 +7,27 @@
         mc:Ignorable="d"
         Title="GameView" Height="450" Width="700">
     <Grid Background="#FF292929">
-        <Label Name="lblTest" Content="Label" HorizontalAlignment="Left" Margin="269,157,0,0" VerticalAlignment="Top"/>
-
-
+        <Image x:Name="imgGame" Source="/Screenshot 2023-09-21 134326 (Medium).png" Height="260" Width="400" VerticalAlignment="Top" Stretch="UniformToFill" Margin="24,77,276,0">
+            <Image.Clip>
+                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,400,260" />
+            </Image.Clip>
+        </Image>
+        <Button Grid.Column="0" x:Name="btnInstall" Content="Download" Click="btnInstall_Click" HorizontalAlignment="Left" Margin="320,349,0,0" VerticalAlignment="Top" Width="100" Height="29" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White" Background="#FF0878E5">
+            <Button.Clip>
+                <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"/>
+            </Button.Clip>
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FF292929"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Label Content="Game Name" Name="lblGameName" HorizontalAlignment="Left" Margin="36,348,0,0" VerticalAlignment="Top" Foreground="White"/>
 
     </Grid>
 </Page>
