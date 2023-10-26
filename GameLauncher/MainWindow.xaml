@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="login" Height="481" Width="800" ResizeMode="NoResize" Icon="/GameLauncherIconControler1.png">
     <Grid Background="#FF121212">
-    
+        <Label Name="Label" Content="Label" HorizontalAlignment="Left" Margin="266,387,0,0" VerticalAlignment="Top" Foreground="White" />
         <Border Margin="260,130,238,120" Background="#FF202020" RenderTransformOrigin="0.5,0.5" MinWidth="280" MinHeight="120" CornerRadius="5">
             <Canvas>
 
@@ -17,11 +17,13 @@
                     <Button Name="btnContinue" Content="Login"  Click="btnLogin_Click" Background="{x:Null}" BorderBrush="White" Foreground="White" Cursor="Hand"/>
                 </Border>
                 <TextBox Name="txtUsername" TextWrapping="NoWrap"  Text="Username" Width="160" Canvas.Left="60" Canvas.Top="58" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF202020" Foreground="White " GotFocus="txtBox_GotFocus" LostFocus="txtBox_LostFocus" Cursor="IBeam"/>
-                <TextBox Name="txtPassword" TextWrapping="NoWrap" Text="Password" Cursor="IBeam"  Width="160" Canvas.Left="60" Canvas.Top="90" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF202020" Foreground="White" GotFocus="txtBox_GotFocus" LostFocus="txtBox_LostFocus"/>
+                <TextBox  Name="txtPassword" Text="Password" Cursor="IBeam" ToolTip="Password" Width="160" Canvas.Left="60" Canvas.Top="90" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF202020" Foreground="White" GotFocus="txtBox_GotFocus" LostFocus="txtBox_LostFocus" TextChanged="TxtPassword_OnTextChanged" />
                 <Label Name="lblOption" Content="Dont have an account? Sign Up" Cursor="Hand" Height="33" Width="184" Canvas.Left="48" Canvas.Top="156" HorizontalAlignment="Center" VerticalAlignment="Top" 
                        Foreground="#FF6D6D6D" MouseDown="lblOption_MouseDown" MouseEnter="lblOption_MouseEnter" MouseLeave="lblOption_MouseLeave"/>
+                <Image Name="imgEye" Height="10" Width="16" HorizontalAlignment="Center" Canvas.Left="222" Canvas.Top="94" VerticalAlignment="Top" Source="/hiddenEye2.png" MouseDown="Eye_MouseDown" Cursor="Hand"/>
             </Canvas>
         </Border>
+
 
 
 

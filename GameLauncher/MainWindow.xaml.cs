@@ -40,7 +40,7 @@ namespace GameLauncher
         const int iterations = 350000;
         HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
         byte[] salt = new byte[32] { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
-
+        private string strPassword = "";
 
         public MainWindow()
         {
@@ -61,7 +61,7 @@ namespace GameLauncher
             var result = dbList.Find(filter).ToList();
             //MessageBox.Show(result[0]["password"].ToString());
 
-            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(txtPassword.Text, salt, iterations, hashAlgorithm, keySize);
+            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(strPassword, salt, iterations, hashAlgorithm, keySize);
 
             if (result.Count > 0) // check if the username is found
             {
@@ -94,6 +94,8 @@ namespace GameLauncher
         }
         private void btnSignUp_Click(object sender, RoutedEventArgs e)
         {
+            if(blnEye)
+                strPassword = txtPassword.Text;
             if (ValidInput())
                 return;
 
@@ -145,7 +147,7 @@ namespace GameLauncher
         {
             MongoClient dbClient = new MongoClient("mongodb+srv://Steven:UBdlX3HpQqXqHiNi@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority");
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
-            var filter = Builders<BsonDocument>.Filter.Eq("Usernam", txtUsername.Text);
+            var filter = Builders<BsonDocument>.Filter.Eq("Username", txtUsername.Text);
             var result = dbList.Find(filter).ToList();
             MessageBox.Show(result[0]["Password"].ToString());
 
@@ -255,7 +257,15 @@ namespace GameLauncher
                 txtBox.Text = "";
             else if(txtBox.Name == "txtPassword" && txtBox.Text == "Password")
                 txtBox.Text = "";
-            
+
+        }
+
+        private void txtPass_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtPassword.Text == "Password")
+            {
+                txtPassword.Text = "";
+            }
         }
 
         // adds the places holder text when the user leaves the textbox
@@ -266,6 +276,14 @@ namespace GameLauncher
                 txtBox.Text = "Username";
             else if (txtBox.Name == "txtPassword" && txtBox.Text == "")
                 txtBox.Text = "Password";
+        }
+
+        private void txtPass_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtPassword.Text == "")
+            {
+                txtPassword.Text = "Password";
+            }
         }
 
         private bool ValidInput()
@@ -284,7 +302,7 @@ namespace GameLauncher
                 return true;
             }
 
-            if (txtPassword.Text.Any(c => !char.IsLetterOrDigit(c)))
+            if (strPassword.Any(c => !char.IsLetterOrDigit(c)))
             {
                 MessageBox.Show("Please enter a valid password");
                 return true;
@@ -294,6 +312,47 @@ namespace GameLauncher
             // https://learn.microsoft.com/en-us/dotnet/api/system.char.isletterordigit?view=net-7.0
             // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions
             return false;
+        }
+
+        // controls the password textbox and password string
+        // while hidden , the password is stored in a string and the textbox is filled with *
+        private void TxtPassword_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (txtPassword.Text != "Password" && !blnEye)
+            {
+                if (txtPassword.Text.Length < strPassword.Length && strPassword != "")
+                {
+                    strPassword = strPassword.Remove(strPassword.Length - 1);
+                }
+                else if (txtPassword.Text.Length > strPassword.Length)
+                {
+                    strPassword = strPassword + txtPassword.Text.Last();
+                    txtPassword.Text = new string('*', txtPassword.Text.Length);
+                    txtPassword.CaretIndex = txtPassword.Text.Length;
+                }
+            }
+            Label.Content = strPassword;
+
+
+        }
+        
+        // controls the eye icon that shows the password
+        private bool blnEye = false;
+        private void Eye_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (blnEye)
+            {
+                imgEye.Source = new BitmapImage(new Uri("pack://application:,,,/hiddenEye2.png"));
+                strPassword = txtPassword.Text;
+                txtPassword.Text = new string('*', txtPassword.Text.Length);
+            }
+            else
+            {
+                imgEye.Source = new BitmapImage(new Uri("pack://application:,,,/eye.png"));
+                txtPassword.Text = strPassword;
+
+            }
+            blnEye = !blnEye;
         }
     }
 }

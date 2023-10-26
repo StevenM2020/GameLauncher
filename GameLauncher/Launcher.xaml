@@ -13,7 +13,11 @@
 
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Name="btnStore" Click="btnStore_Click" Content="Store" HorizontalAlignment="Center" Margin="5,55,0,0" VerticalAlignment="Top" Width="100" Height="29" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Column="0" Grid.Row="1"  Name="btnStore" Click="btnStore_Click" Content="Store" HorizontalAlignment="Center" Margin="5,55,0,0" VerticalAlignment="Top" Width="100" Height="29" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
                 <Button.Clip>
                     <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"/>
                 </Button.Clip>
@@ -28,23 +32,23 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Grid.Column="0" Name="btnLibrary"  Content="Library" HorizontalAlignment="Center" Margin="5,90,0,0" VerticalAlignment="Top" Width="100" Height="29"  Background="#FF292929" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
+            <Button Grid.Column="0" Grid.Row="1"  Name="btnLibrary"  Content="Library" HorizontalAlignment="Center" Margin="5,90,0,0" VerticalAlignment="Top" Width="100" Height="29"  Background="#FF292929" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
                 <Button.Clip>
                     <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"  />
                 </Button.Clip>
             </Button>
-            <Button Grid.Column="0" Name="btnGameDev" Content="Game Dev" HorizontalAlignment="Left" Margin="5,125,0,0" VerticalAlignment="Top" Width="100" Height="29" Background="#FF292929" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
+            <Button Grid.Column="0" Grid.Row="1" Name="btnGameDev" Content="Game Dev" HorizontalAlignment="Left" Margin="5,125,0,0" VerticalAlignment="Top" Width="100" Height="29" Background="#FF292929" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White">
                 <Button.Clip>
                     <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"  />
                 </Button.Clip>
             </Button>
 
-            <Label Grid.Column="0" Content="Quick Launch" HorizontalAlignment="Center" Margin="0,178,0,0" VerticalAlignment="Top" Foreground="White"/>
-            <Image Grid.Column="0" HorizontalAlignment="Left" Height="32" Margin="9,207,0,0" VerticalAlignment="Top" Width="34" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
-            <Label Grid.Column="0" Content="Game" HorizontalAlignment="Left" Margin="48,206,0,0" VerticalAlignment="Top" Height="30" Width="52" Foreground="White"/>
+            <Label Grid.Column="0" Grid.Row="1" Content="Quick Launch" HorizontalAlignment="Center" Margin="0,178,0,0" VerticalAlignment="Top" Foreground="White"/>
+            <Image Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Height="32" Margin="9,207,0,0" VerticalAlignment="Top" Width="34" Source="C:\Users\steve\Downloads\20230921_061044.jpg"/>
+            <Label Grid.Column="0" Grid.Row="1" Content="Game" HorizontalAlignment="Left" Margin="48,206,0,0" VerticalAlignment="Top" Height="30" Width="52" Foreground="White"/>
 
 
-            <Frame Grid.Column="1" Name="somethingFrame"></Frame>
+            <Frame Grid.Column="1" Grid.Row="1" Name="somethingFrame"></Frame>
 
         </Grid>
         
