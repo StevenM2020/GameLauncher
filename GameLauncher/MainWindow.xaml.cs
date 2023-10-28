@@ -72,7 +72,7 @@ namespace GameLauncher
                 }
                 else
                 {
-                    MessageBox.Show("Incorrect Password");
+                    MessageBox.Show("Incorrect Password, " + Convert.ToHexString(hashedPassword));
                     return;
                 }
             }
@@ -84,7 +84,7 @@ namespace GameLauncher
 
             // Create a new launcher window and close the current window
 
-            Launcher launcher = new Launcher();
+            Launcher launcher = new Launcher(result[0]["_id"].ToString(), result[0]["username"].ToString());
             launcher.Left = this.Left;
             launcher.Top = this.Top;
             launcher.Show();
@@ -124,11 +124,11 @@ namespace GameLauncher
             //    salt[i] = 0;
             //}
             
-            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(txtPassword.Text, salt, iterations, hashAlgorithm, keySize);
+            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(strPassword, salt, iterations, hashAlgorithm, keySize);
             //MessageBox.Show(Convert.ToHexString(hashedPassword));
 
             // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
-            
+
             var document = new BsonDocument
             {
                 {"username", txtUsername.Text},
@@ -150,10 +150,6 @@ namespace GameLauncher
             var filter = Builders<BsonDocument>.Filter.Eq("Username", txtUsername.Text);
             var result = dbList.Find(filter).ToList();
             MessageBox.Show(result[0]["Password"].ToString());
-
-
-
-
 
             var database = dbClient.GetDatabase("GameLauncher");
             var collection = database.GetCollection<BsonDocument>("Users");
@@ -244,10 +240,6 @@ namespace GameLauncher
         {
             lblOption.Foreground = new SolidColorBrush(Colors.Gray);
         }
-
-
-
-
 
         // removes the places holder text when the user clicks on the textbox
         private void txtBox_GotFocus(object sender, RoutedEventArgs e)

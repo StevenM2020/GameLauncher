@@ -26,7 +26,9 @@ namespace GameLauncher
     public partial class Launcher : Window
     {
         private string currentPage;
-        public Launcher()
+        private string strId;
+        private string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
+        public Launcher(string strId, string strUsername)
         {
             InitializeComponent();
 
@@ -34,6 +36,13 @@ namespace GameLauncher
             GoTo(new Store(this));
             currentPage = (new Store(this)).Title;
             somethingFrame.NavigationUIVisibility = NavigationUIVisibility.Hidden;
+
+            lblUsername.Content = "Welcome, " + strUsername;
+            //lblUsernameChar.Content = strUsername.First().ToString();
+
+            //MessageBox.Show("Welcome, " + strId);
+            this.strId = strId;
+
         }
 
         // Replace column 1 with the new page
@@ -53,6 +62,52 @@ namespace GameLauncher
         private void btnStore_Click(object sender, RoutedEventArgs e)
         {
            GoTo(new Store(this));
+        }
+
+        private void DeleteAccount_Click(object sender, MouseButtonEventArgs e)
+        {
+            //string strCheckPassword = Microsoft.VisualBasic.Interaction.InputBox("Please enter your password to confirm", "Delete Account", "");
+            //MessageBox.Show(strCheckPassword);
+
+
+            bool blnConfirm = MessageBox.Show("Are you sure you want to delete your account?", "Delete Account", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            if (!blnConfirm)
+            {
+                return;
+            }
+            MongoClient dbClient = new MongoClient(connectionUri);
+            var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
+            //convert string to ObjectId
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(strId));
+            var result = dbList.Find(filter).ToList();
+            if (result.Count > 0)
+            {
+                //MessageBox.Show("more?");
+                dbList.DeleteOneAsync(filter);
+                MessageBox.Show("Account deleted");
+                this.Close();
+            }
+
+            //MessageBox.Show("broken");
+            // var filter = Builders<Restaurant>.Filter
+            // .Eq(r => r.Name, "Ready Penny Inn");
+            //return await _restaurantsCollection.DeleteOneAsync(filter);
+
+        }
+
+        private void brdUserControls_MouseEnter(object sender, MouseEventArgs e)
+        {
+            brdUserControls.Height = 84;
+            lblDelete.Visibility = Visibility.Visible;
+            lblSupportEmail.Visibility = Visibility.Visible;
+        }
+
+        private void brdUserControls_MouseLeave(object sender, MouseEventArgs e)
+        {
+            brdUserControls.Height = 26;
+            lblDelete.Visibility = Visibility.Hidden;
+            lblSupportEmail.Visibility = Visibility.Hidden;
+            
         }
     }
 }
