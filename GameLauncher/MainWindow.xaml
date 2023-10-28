@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="login" Height="481" Width="800" ResizeMode="NoResize" Icon="/GameLauncherIconControler1.png">
     <Grid Background="#FF121212">
-        <Label Name="Label" Content="Label" HorizontalAlignment="Left" Margin="266,387,0,0" VerticalAlignment="Top" Foreground="White" />
+        <Label Name="Label" Content="Label" HorizontalAlignment="Left" Margin="266,358,0,0" VerticalAlignment="Top" Foreground="White" />
         <Border Margin="260,130,238,120" Background="#FF202020" RenderTransformOrigin="0.5,0.5" MinWidth="280" MinHeight="120" CornerRadius="5">
             <Canvas>
 
@@ -23,7 +23,11 @@
                 <Image Name="imgEye" Height="10" Width="16" HorizontalAlignment="Center" Canvas.Left="222" Canvas.Top="94" VerticalAlignment="Top" Source="/hiddenEye2.png" MouseDown="Eye_MouseDown" Cursor="Hand"/>
             </Canvas>
         </Border>
-
+        <Canvas Name="canEULA" Visibility="Hidden">
+            <WebBrowser Height="396" Width="800" Source="https://gamelaunchereula.stevenbikerider.repl.co/" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Button Name="btnAgree" Content="Agree"  Click="btnAgree_Click" Background="{x:Null}" BorderBrush="White" Foreground="White" Cursor="Hand" Canvas.Left="648" Canvas.Top="404" Height="31" Width="128" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <Button Name="btnCancel" Content="Cancel"  Click="btnCancel_Click" Background="{x:Null}" BorderBrush="White" Foreground="White" Cursor="Hand" Canvas.Left="511" Canvas.Top="404" HorizontalAlignment="Left" VerticalAlignment="Center" Height="31" Width="128" />
+        </Canvas>
 
 
 

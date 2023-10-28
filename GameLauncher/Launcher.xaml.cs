@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Navigation;
+using System.Diagnostics;
 
 namespace GameLauncher
 {
@@ -109,5 +110,6 @@ namespace GameLauncher
             lblSupportEmail.Visibility = Visibility.Hidden;
             
         }
+
     }
 }

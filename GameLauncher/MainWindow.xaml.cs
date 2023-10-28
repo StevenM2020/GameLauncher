@@ -112,33 +112,7 @@ namespace GameLauncher
                 return;
             }
 
-            // Create a new document and insert it into the database
-            var database = dbClient.GetDatabase("GameLauncher");
-            var collection = database.GetCollection<BsonDocument>("Users");
-
-
-            //var salt = RandomNumberGenerator.GetBytes(32);
-            // reliable salt
-            //for (int i = 0; i < 32; i++)
-            //{
-            //    salt[i] = 0;
-            //}
-            
-            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(strPassword, salt, iterations, hashAlgorithm, keySize);
-            //MessageBox.Show(Convert.ToHexString(hashedPassword));
-
-            // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
-
-            var document = new BsonDocument
-            {
-                {"username", txtUsername.Text},
-                {"password", Convert.ToHexString(hashedPassword)},
-                {"developer", false}
-            };
-          
-            collection.InsertOne(document);
-
-            MessageBox.Show("Sign Up Successful");
+            canEULA.Visibility = Visibility.Visible;
         }
 
 
@@ -345,6 +319,44 @@ namespace GameLauncher
 
             }
             blnEye = !blnEye;
+        }
+
+        private void btnAgree_Click(object sender, RoutedEventArgs e)
+        {
+            MongoClient dbClient = new MongoClient(connectionUri);
+            // Create a new document and insert it into the database
+            var database = dbClient.GetDatabase("GameLauncher");
+            var collection = database.GetCollection<BsonDocument>("Users");
+
+
+            //var salt = RandomNumberGenerator.GetBytes(32);
+            // reliable salt
+            //for (int i = 0; i < 32; i++)
+            //{
+            //    salt[i] = 0;
+            //}
+
+            var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(strPassword, salt, iterations, hashAlgorithm, keySize);
+            //MessageBox.Show(Convert.ToHexString(hashedPassword));
+
+            // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
+
+            var document = new BsonDocument
+            {
+                {"username", txtUsername.Text},
+                {"password", Convert.ToHexString(hashedPassword)},
+                {"developer", false}
+            };
+
+            collection.InsertOne(document);
+
+            MessageBox.Show("Sign Up Successful");
+            canEULA.Visibility = Visibility.Hidden;
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            canEULA.Visibility = Visibility.Hidden;
         }
     }
 }
