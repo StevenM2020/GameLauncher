@@ -98,9 +98,10 @@ namespace GameLauncher
 
         private void brdUserControls_MouseEnter(object sender, MouseEventArgs e)
         {
-            brdUserControls.Height = 84;
+            brdUserControls.Height = 96;
             lblDelete.Visibility = Visibility.Visible;
             lblSupportEmail.Visibility = Visibility.Visible;
+            lblEULA.Visibility = Visibility.Visible;
         }
 
         private void brdUserControls_MouseLeave(object sender, MouseEventArgs e)
@@ -108,7 +109,8 @@ namespace GameLauncher
             brdUserControls.Height = 26;
             lblDelete.Visibility = Visibility.Hidden;
             lblSupportEmail.Visibility = Visibility.Hidden;
-            
+            lblEULA.Visibility = Visibility.Hidden;
+
         }
 
     }
