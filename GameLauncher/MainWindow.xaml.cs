@@ -67,8 +67,7 @@ namespace GameLauncher
             {
                 if (result[0]["password"].ToString() == Convert.ToHexString(hashedPassword)) // check if the password is correct
                 {
-                    MessageBox.Show("Login Successful");
-                    // code to login the user will go here
+                    //MessageBox.Show("Login Successful");
                 }
                 else
                 {
@@ -113,72 +112,6 @@ namespace GameLauncher
             }
 
             canEULA.Visibility = Visibility.Visible;
-        }
-
-
-        // just for testing purposes
-            private void hold()
-        {
-            MongoClient dbClient = new MongoClient("mongodb+srv://Steven:UBdlX3HpQqXqHiNi@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority");
-            var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
-            var filter = Builders<BsonDocument>.Filter.Eq("Username", txtUsername.Text);
-            var result = dbList.Find(filter).ToList();
-            MessageBox.Show(result[0]["Password"].ToString());
-
-            var database = dbClient.GetDatabase("GameLauncher");
-            var collection = database.GetCollection<BsonDocument>("Users");
-
-
-
-
-
-
-            var document = new BsonDocument
-            {
-                {"username", txtUsername.Text},
-                {"password", txtPassword.Text},
-                {"developer", false}
-            };
-
-            var document2 = new BsonDocument { { "student_id", 10000 }, {
-                            "scores",
-                            new BsonArray {
-                            new BsonDocument { { "type", "exam" }, { "score", 88.12334193287023 } },
-                            new BsonDocument { { "type", "quiz" }, { "score", 74.92381029342834 } },
-                            new BsonDocument { { "type", "homework" }, { "score", 89.97929384290324 } },
-                            new BsonDocument { { "type", "homework" }, { "score", 82.12931030513218 } }
-                            }
-                            }, { "class_id", 480 }
-                    };
-            collection.InsertOne(document2);
-            MessageBox.Show("User Created");
-
-
-        }
-
-
-            // just for testing purposes
-        private void ping()
-        {
-            const string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
-            // Set the ServerApi field of the settings object to Stable API version 1
-            settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-            // Create a new client and connect to the server
-            var client = new MongoClient(settings);
-            // Send a ping to confirm a successful connection
-            try
-            {
-                var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-                MessageBox.Show("Pinged your deployment. You successfully connected to MongoDB!");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-
-
-
         }
 
         // change the text of the label and the button when the user clicks on it

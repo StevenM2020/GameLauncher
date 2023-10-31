@@ -29,6 +29,10 @@ namespace GameLauncher
         private string currentPage;
         private string strId;
         private string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
+        string strStore = "";
+
+        List<Game> games = new List<Game>();
+        private int[] intSearchindex; 
         public Launcher(string strId, string strUsername)
         {
             InitializeComponent();
@@ -36,6 +40,7 @@ namespace GameLauncher
             // Set store page as default
             GoTo(new Store(this));
             currentPage = (new Store(this)).Title;
+            strStore = currentPage;
             somethingFrame.NavigationUIVisibility = NavigationUIVisibility.Hidden;
 
             lblUsername.Content = "Welcome, " + strUsername;
@@ -44,17 +49,32 @@ namespace GameLauncher
             //MessageBox.Show("Welcome, " + strId);
             this.strId = strId;
 
+
+            // Get games from database
+            MongoClient dbClient = new MongoClient(connectionUri);
+            var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Games");
+            var filter = Builders<BsonDocument>.Filter.Empty;
+            var result = dbList.Find(filter).ToList();
+
+            //MessageBox.Show(result.Count.ToString());
+    
+            // fill games list with games from database using a foreach 
+            foreach (var game in result)
+            {
+                //MessageBox.Show(game["name"].ToString());
+                games.Add(new Game(game["_id"].ToString(), game["name"].ToString()));
+            }
         }
 
         // Replace column 1 with the new page
         public void GoTo(Page page)
         {
-            if (currentPage != page.Title)
+            if (currentPage != strStore && page.Title == strStore || page.Title != strStore)
             {
                 somethingFrame.NavigationService.Navigate(page);
                 somethingFrame.NavigationService.RemoveBackEntry();
                 currentPage = page.Title;
-                MessageBox.Show("Page changed, " + page.Title);
+                //MessageBox.Show("Page changed, " + page.Title);
             }
 
 
@@ -88,6 +108,7 @@ namespace GameLauncher
                 MessageBox.Show("Account deleted");
                 this.Close();
             }
+            // https://www.mongodb.com/docs/drivers/csharp/current/usage-examples/deleteOne/
 
             //MessageBox.Show("broken");
             // var filter = Builders<Restaurant>.Filter
@@ -113,5 +134,81 @@ namespace GameLauncher
 
         }
 
+        private void txtBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var txtBox = (TextBox)sender;
+            if (txtBox.Name == "txtSearch" && txtBox.Text == "Search")
+                txtBox.Text = "";
+
+        }
+
+        // adds the places holder text when the user leaves the textbox
+        private void txtBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var txtBox = (TextBox)sender;
+            if (txtBox.Name == "txtSearch" && txtBox.Text == "")
+                txtBox.Text = "Search";
+        }
+
+        private void txtSearch_OnTextChange(object sender, TextChangedEventArgs e)
+        {
+            
+            if (txtSearch.Text == "Search" || txtSearch.Text.Trim() == "" || txtSearch.Text.Length < 1)
+            {
+                pnlSearch.Height = 26;
+                return;
+            }
+            lstSearch.Items.Clear();
+
+            foreach (Game game in games)
+            {
+                // if the game name contains the search text then add it to the list and keep track of the index
+
+                if (game.Name.ToLower().Contains(txtSearch.Text.ToLower().Trim()))
+                {
+                    lstSearch.Items.Add(game.Name);
+                    if (lstSearch.Items.Count == 1)
+                    {
+                        intSearchindex = new int[1];
+                    }
+                    else
+                    {
+                        Array.Resize(ref intSearchindex, lstSearch.Items.Count);
+                    }   
+                    intSearchindex[lstSearch.Items.Count-1] = (games.IndexOf(game));
+                }
+            }
+
+            pnlSearch.Height = 26 + (lstSearch.Items.Count * 26);
+            
+        }
+
+        public struct Game
+        {
+            private string name;
+            private string id;
+
+            public Game(string id, string name)
+            {
+                this.name = name;
+                this.id = id;
+            }
+
+            public string Name { get => name; }
+            public string Id { get => id; }
+        }
+
+        private void Search_Selected(object sender, RoutedEventArgs e)
+        {
+            if (txtSearch.Text == "Search" || txtSearch.Text.Trim() == "" || txtSearch.Text.Length < 1)
+            {
+                return;
+            }
+
+            GoTo(new GameView(gameId: games[intSearchindex[lstSearch.SelectedIndex]].Id ));
+            txtSearch.Text = "Search";
+            lstSearch.Items.Clear();
+            lstSearch.SelectedIndex = -1;
+        }
     }
 }

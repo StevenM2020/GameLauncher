@@ -45,7 +45,7 @@ namespace GameLauncher
                 //MessageBox.Show("Game not found, " + gameId);
                 return;
             }
-            MessageBox.Show(result[0]["images"][0].ToString());
+            //MessageBox.Show(result[0]["images"][0].ToString());
             BitmapImage gameImage = new BitmapImage(new Uri(result[0]["images"][0].ToString()));
             imgGame.Source = gameImage;
             lblGameName.Content = result[0]["name"].ToString();
