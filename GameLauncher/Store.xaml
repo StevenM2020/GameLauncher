@@ -5,8 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GameLauncher"
       mc:Ignorable="d" 
-      d:DesignHeight="450"
-      Title="Store" Width="700">
+
+      Title="Store" Height="700" Width="700">
 
     <Grid Background="#FF292929">
 
@@ -75,7 +75,6 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
-                <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
 
 

@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameLauncher"
         mc:Ignorable="d"
-        Title="GameView" Height="450" Width="700">
+        Title="GameView" Height="700" Width="700">
     <Grid Background="#FF292929">
-        <Image x:Name="imgGame" Source="/Screenshot 2023-09-21 134326 (Medium).png" Height="260" Width="400" VerticalAlignment="Top" Stretch="UniformToFill" Margin="16,16,284,0">
+        <Image x:Name="imgGame" Source="/Screenshot 2023-09-21 134326 (Medium).png" Height="260" Width="400" VerticalAlignment="Top" Stretch="UniformToFill" Margin="16,26,284,0">
             <Image.Clip>
                 <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,400,260" />
             </Image.Clip>
         </Image>
-        <Button Grid.Column="0" x:Name="btnInstall" Content="Download" Click="btnInstall_Click" HorizontalAlignment="Left" Margin="312,288,0,0" VerticalAlignment="Top" Width="100" Height="29" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White" Background="#FF0878E5">
+        <Button Grid.Column="0" x:Name="btnInstall" Content="Download" Click="btnInstall_Click" HorizontalAlignment="Left" Margin="312,298,0,0" VerticalAlignment="Top" Width="100" Height="29" BorderThickness="0,0,0,0" Cursor="Hand" Foreground="White" Background="#FF0878E5">
             <Button.Clip>
                 <RectangleGeometry RadiusX="5" RadiusY="5" Rect="5,0,90,29"/>
             </Button.Clip>
@@ -27,9 +27,9 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Label Content="Game Name" Name="lblGameName" HorizontalAlignment="Left" Margin="17,287,0,0" VerticalAlignment="Top" Foreground="White"/>
-        <TextBlock Name="lblDescription" HorizontalAlignment="Center" Margin="0,327,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="94" Width="646" Foreground="White"/>
-        <StackPanel Name="pnlGameProperties" Margin="429,20,19,181">
+        <Label Content="Game Name" Name="lblGameName" HorizontalAlignment="Left" Margin="17,297,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16" FontWeight="Bold" Width="283"/>
+        <TextBlock Name="lblDescription" HorizontalAlignment="Center" Margin="0,337,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="140" Width="646" Foreground="White"/>
+        <StackPanel Name="pnlGameProperties" Margin="429,30,19,171">
         </StackPanel>
 
     </Grid>

@@ -65,14 +65,14 @@ namespace GameLauncher
                 games.Add(new Game(game["_id"].ToString(), game["name"].ToString()));
             }
 
-            scrLauncher.CanContentScroll = true;
-            //scrLauncher.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            scrLauncher.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            scrLauncher.PanningMode = PanningMode.VerticalOnly;
-            scrLauncher.PanningDeceleration = 0.001;
-            scrLauncher.PanningRatio = 0.001;
+            //scrLauncher.CanContentScroll = true;
+            ////scrLauncher.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            //scrLauncher.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            //scrLauncher.PanningMode = PanningMode.VerticalOnly;
+            //scrLauncher.PanningDeceleration = 0.001;
+            //scrLauncher.PanningRatio = 0.001;
 
-
+           
         }
 
         // Replace column 1 with the new page
@@ -83,6 +83,7 @@ namespace GameLauncher
                 somethingFrame.NavigationService.Navigate(page);
                 somethingFrame.NavigationService.RemoveBackEntry();
                 currentPage = page.Title;
+                scrLauncher.ScrollToTop();
                 //MessageBox.Show("Page changed, " + page.Title);
             }
 
@@ -187,6 +188,8 @@ namespace GameLauncher
                     intSearchindex[lstSearch.Items.Count-1] = (games.IndexOf(game));
                 }
             }
+
+            MessageBox.Show(intSearchindex.Count().ToString());
 
             pnlSearch.Height = 26 + (lstSearch.Items.Count * 26);
             
