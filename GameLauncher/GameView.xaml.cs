@@ -49,6 +49,19 @@ namespace GameLauncher
             BitmapImage gameImage = new BitmapImage(new Uri(result[0]["images"][0].ToString()));
             imgGame.Source = gameImage;
             lblGameName.Content = result[0]["name"].ToString();
+
+            lblDescription.Text = result[0]["description"].ToString();
+
+
+            pnlGameProperties.Children.Add(StackPanelMaker("Developer", "text"));
+            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
+            pnlGameProperties.Children.Add(StackPanelMaker("Platform", "text"));
+            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
+            pnlGameProperties.Children.Add(StackPanelMaker("Release Date", "text"));
+            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
+            pnlGameProperties.Children.Add(StackPanelMaker("Genres", "text"));
+            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
+            pnlGameProperties.Children.Add(StackPanelMaker("Features", "text"));
         }
 
         private void btnStore_Click(object sender, RoutedEventArgs e)
@@ -76,6 +89,25 @@ namespace GameLauncher
 
 
             //https://www.mongodb.com/docs/drivers/csharp/current/usage-examples/updateOne/
+        }
+        // create a function that creates and returns a horizontal stacked panel with 2 labels on either side. The function should also accept the values for the labels
+
+        private StackPanel StackPanelMaker(string strLabel1, string strLabel2)
+        {
+            StackPanel pnl = new StackPanel();
+            Label lbl1 = new Label();
+            Label lbl2 = new Label();
+            lbl2.HorizontalContentAlignment = HorizontalAlignment.Right;
+            pnl.Orientation = Orientation.Horizontal;
+            lbl1.Content = strLabel1;
+            lbl2.Content = strLabel2;
+            lbl2.Foreground = Brushes.White;
+            lbl1.Foreground = Brushes.White;
+            lbl1.Width = 100;
+            lbl2.Width = 150;
+            pnl.Children.Add(lbl1);
+            pnl.Children.Add(lbl2);
+            return pnl;
         }
     }
 }

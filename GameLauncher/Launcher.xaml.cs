@@ -58,12 +58,21 @@ namespace GameLauncher
 
             //MessageBox.Show(result.Count.ToString());
     
-            // fill games list with games from database using a foreach 
+        
             foreach (var game in result)
             {
                 //MessageBox.Show(game["name"].ToString());
                 games.Add(new Game(game["_id"].ToString(), game["name"].ToString()));
             }
+
+            scrLauncher.CanContentScroll = true;
+            //scrLauncher.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            scrLauncher.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            scrLauncher.PanningMode = PanningMode.VerticalOnly;
+            scrLauncher.PanningDeceleration = 0.001;
+            scrLauncher.PanningRatio = 0.001;
+
+
         }
 
         // Replace column 1 with the new page
