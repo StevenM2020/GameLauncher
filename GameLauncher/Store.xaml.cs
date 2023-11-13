@@ -24,8 +24,7 @@ namespace GameLauncher
     /// </summary>
     public partial class Store : Page
     {
-        const string connectionUri =
-            "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
+        private string connectionUri = "";
 
         List<FeaturedGames> featuredGames = new List<FeaturedGames>();
         private Launcher launcher;
@@ -33,6 +32,7 @@ namespace GameLauncher
         {
             InitializeComponent();
             launcher = launcher1;
+            connectionUri = launcher.GetConnectionUri();
             MongoClient dbClient = new MongoClient(connectionUri);
             // Get the collection of users and filter by username
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Games");
@@ -179,7 +179,7 @@ namespace GameLauncher
             //this.Content = new GameView();
 
             
-            launcher.GoTo(new GameView(gameId: imgGame.Tag.ToString()));
+            launcher.GoTo(new GameView(gameId: imgGame.Tag.ToString(), launcher));
 
         }
 

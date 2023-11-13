@@ -2,7 +2,11 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace GameLauncher
 {
     /// <summary>
@@ -21,77 +26,219 @@ namespace GameLauncher
     /// </summary>
     public partial class GameView : Page
     {
-        const string connectionUri =
-            "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
+        private string connectionUri = "";
         ObjectId gameId;
-        public GameView(string gameId)
+        string fileName = "game.zip";
+        string downloadPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", "game.zip");
+        private string gameDownloadURL = "";
+
+        public GameView(string gameId, Launcher launcher)
         {
             InitializeComponent();
 
             this.gameId = ObjectId.Parse(gameId);
+            connectionUri = launcher.GetConnectionUri();
 
-            MongoClient dbClient = new MongoClient(connectionUri);
-
-            var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Games");
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", this.gameId);
-            var result = dbList.Find(filter).ToList();
-
-            for (int i = 0; i <= 4; i++)
+            try
             {
-                //MessageBox.Show(dbList.Find(new BsonDocument()).ToList()[i]["_id"].ToString());
+                // Connect to database
+                MongoClient dbClient = new MongoClient(connectionUri);
+
+                var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Games");
+                var filter = Builders<BsonDocument>.Filter.Eq("_id", this.gameId);
+                var result = dbList.Find(filter).ToList();
+
+                // Check if game exists
+                if (result.Count == 0)
+                {
+                    MessageBox.Show("Game not found");
+                    launcher.GoTo(new Store(launcher));
+                    return;
+                }
+
+                // Set game image
+                try
+                {
+
+                    BitmapImage gameImage = new BitmapImage(new Uri(result[0]["images"][0].ToString()));
+                    imgGame.Source = gameImage;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("ERROR: missing image \n" + e);
+                }
+
+                // Set game name
+                try
+                {
+                    lblGameName.Content = result[0]["name"].ToString();
+                }
+                catch (Exception e)
+                {
+                    lblGameName.Content = "No name available";
+                    Debug.WriteLine("ERROR: missing name \n" + e);
+                }
+
+                // Set game description
+                try
+                {
+                    lblDescription.Text = result[0]["description"].ToString();
+                }
+                catch (Exception e)
+                {
+                    lblDescription.Text = "No description available";
+
+                    Debug.WriteLine("ERROR: missing description \n" + e);
+                }
+
+                // Set game description
+                try
+                {
+                    gameDownloadURL = result[0]["downloadURL"].ToString();
+                }
+                catch (Exception e)
+                {
+                    isInstalling = true;
+
+                    btnInstall.Content = "No download available";
+                    btnInstall.Width = 200;
+                    btnInstall.Background = Brushes.Red;
+                    btnInstall.Clip = new RectangleGeometry(new Rect(5, 0, 190, 29), 5.0, 5.0);
+                    btnInstall.Margin = new Thickness(btnInstall.Margin.Left - 100, btnInstall.Margin.Top, btnInstall.Margin.Right, btnInstall.Margin.Bottom);
+
+
+
+
+                    Debug.WriteLine("ERROR: missing description \n" + e);
+                }
+
+                // Set game properties
+                try
+                {
+                    foreach (var item in result[0]["properties"].AsBsonDocument)
+                    {
+                        try
+                        {
+                            pnlGameProperties.Children.Add(StackPanelMaker(item.Name, item.Value.AsString));
+                            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("ERROR: missing property \n" + e);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("ERROR: missing all properties \n" + e);
+                    pnlGameProperties.Children.Add(StackPanelMaker("", "properties not available"));
+                }
             }
-            if (result.Count == 0)
+            catch (Exception e)
             {
-                //MessageBox.Show("Game not found, " + gameId);
+                Debug.WriteLine("ERROR: could not connect to database \n" + e);
+                MessageBox.Show("Could not connect to database");
+            }
+        }
+
+        bool isInstalling = false;
+        private async void btnInstall_Click(object sender, RoutedEventArgs e)
+        {
+            if (isInstalling)
+            {
                 return;
             }
-            //MessageBox.Show(result[0]["images"][0].ToString());
-            BitmapImage gameImage = new BitmapImage(new Uri(result[0]["images"][0].ToString()));
-            imgGame.Source = gameImage;
-            lblGameName.Content = result[0]["name"].ToString();
+            isInstalling = true;
+            try
+            {
+                btnInstall.Content = "Installing...";
+                btnInstall.Cursor = Cursors.Wait;
 
-            lblDescription.Text = result[0]["description"].ToString();
+                MongoClient dbClient = new MongoClient(connectionUri);
+                var database = dbClient.GetDatabase("GameLauncher");
+                var collection = database.GetCollection<BsonDocument>("Games");
+                var dbList = database.GetCollection<BsonDocument>("Games");
+                var filter = Builders<BsonDocument>.Filter.Eq("_id", gameId);
+                var result = dbList.Find(filter).ToList();
+
+                try
+                {
+                    int intDownloads = int.Parse(result[0]["downloads"].ToString());
+                    var update = Builders<BsonDocument>.Update.Set("downloads", intDownloads + 1);
+                    collection.UpdateOne(filter, update);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ERROR: missing downloads \n" + ex);
+                }
+                //https://www.mongodb.com/docs/drivers/csharp/current/usage-examples/updateOne/
 
 
-            pnlGameProperties.Children.Add(StackPanelMaker("Developer", "text"));
-            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
-            pnlGameProperties.Children.Add(StackPanelMaker("Platform", "text"));
-            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
-            pnlGameProperties.Children.Add(StackPanelMaker("Release Date", "text"));
-            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
-            pnlGameProperties.Children.Add(StackPanelMaker("Genres", "text"));
-            pnlGameProperties.Children.Add(new Rectangle() { Height = 1, Fill = Brushes.White });
-            pnlGameProperties.Children.Add(StackPanelMaker("Features", "text"));
+                string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads\\";
+                string fileName2 = lblGameName.Content + ".zip";
+                string eFolder = @"\" + lblGameName.Content;
+                //string url = "https://public.bn.files.1drv.com/y4mqmZnSNqfe1t_FL2HzgAN5BD735Ln-8kgmCoUGe1Lx1Is_WIXvO4MdJl1-8y2UmAf9GItbkncblRpsGGz5Q730f5bKYszYdpyEG7DwWazVqvxXFr7fK6P6XVKZZq3tlBDu7r_GZBneKqeUFSYa3mAl3rLUc3BOj9ehmfCSXhZhtgwICaz2GsPR6Vbwhebe8SlQDuXJ4XPtfnWjruHyJJ-59-9Eq2Knog3lCCY9-Owpd0?AVOverride=1";
+                
+                string gameLauncherFilesPath = downloadsPath + "GameLauncherFiles\\";
+
+                if (!Directory.Exists(gameLauncherFilesPath))
+                {
+                    Directory.CreateDirectory(gameLauncherFilesPath);
+                }
+                
+
+                using (WebClient client = new WebClient())
+                {
+                    try
+                    {
+                        await client.DownloadFileTaskAsync(gameDownloadURL, gameLauncherFilesPath + fileName2);
+                    }
+                    catch (WebException)
+                    {
+                        MessageBox.Show("Download connection failed, please contact support.");
+                    }
+
+                    try
+                    {
+                        string zipPath = gameLauncherFilesPath + fileName2;
+                        string extractPath = gameLauncherFilesPath + eFolder;
+
+                        ZipFile.ExtractToDirectory(zipPath, extractPath);
+                        File.Delete(zipPath);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("unzip failed");
+                    }
+
+                    try
+                    {
+                        // find the game exe
+                        string[] files = Directory.GetFiles(gameLauncherFilesPath + eFolder, "*.exe", SearchOption.AllDirectories);
+                        string gameExe = files[0];
+                        // open the game exe
+                        Process.Start(gameExe);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("could not find game file");
+                    }
+                    
+
+                }
+
+                btnInstall.Content = "Installed";
+                btnInstall.Cursor = Cursors.Hand;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR: could not connect to database \n" + ex);
+                MessageBox.Show("Could not connect to database");
+            }
         }
-
-        private void btnStore_Click(object sender, RoutedEventArgs e)
-        {
-            //after clicking the store button, go to the store page
-            //Store store = new Store();
-            //this.NavigationService.Navigate(store);
-            
-        }
-
-        private void btnInstall_Click(object sender, RoutedEventArgs e)
-        {
-            MongoClient dbClient = new MongoClient(connectionUri);
-            var database = dbClient.GetDatabase("GameLauncher");
-            var collection = database.GetCollection<BsonDocument>("Games");
-            var dbList = database.GetCollection<BsonDocument>("Games");
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", gameId);
-            var result = dbList.Find(filter).ToList();
-
-            int intDownloads = int.Parse(result[0]["downloads"].ToString());
-
-            var update = Builders<BsonDocument>.Update.Set("downloads", intDownloads + 1);
-
-            collection.UpdateOne(filter, update);
-
-
-            //https://www.mongodb.com/docs/drivers/csharp/current/usage-examples/updateOne/
-        }
-        // create a function that creates and returns a horizontal stacked panel with 2 labels on either side. The function should also accept the values for the labels
-
+ 
+      
+        // this creates a vertical stack panel with two labels
         private StackPanel StackPanelMaker(string strLabel1, string strLabel2)
         {
             StackPanel pnl = new StackPanel();

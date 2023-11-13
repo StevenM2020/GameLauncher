@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Navigation;
 using System.Diagnostics;
+using System.Configuration;
 
 namespace GameLauncher
 {
@@ -28,15 +29,19 @@ namespace GameLauncher
     {
         private string currentPage;
         private string strId;
-        private string connectionUri = "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
+
+        private string connectionUri =
+            "mongodb+srv://Steven:xEEJd79luZxta49Z@gamelauncherdata.loytk7b.mongodb.net/?retryWrites=true&w=majority";
+
         string strStore = "";
 
         List<Game> games = new List<Game>();
-        private int[] intSearchindex; 
+        private int[] intSearchindex;
+
         public Launcher(string strId, string strUsername)
         {
             InitializeComponent();
-
+            //string connectionUri = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             // Set store page as default
             GoTo(new Store(this));
             currentPage = (new Store(this)).Title;
@@ -57,8 +62,8 @@ namespace GameLauncher
             var result = dbList.Find(filter).ToList();
 
             //MessageBox.Show(result.Count.ToString());
-    
-        
+
+
             foreach (var game in result)
             {
                 //MessageBox.Show(game["name"].ToString());
@@ -72,7 +77,7 @@ namespace GameLauncher
             //scrLauncher.PanningDeceleration = 0.001;
             //scrLauncher.PanningRatio = 0.001;
 
-           
+
         }
 
         // Replace column 1 with the new page
@@ -92,7 +97,7 @@ namespace GameLauncher
 
         private void btnStore_Click(object sender, RoutedEventArgs e)
         {
-           GoTo(new Store(this));
+            GoTo(new Store(this));
         }
 
         private void DeleteAccount_Click(object sender, MouseButtonEventArgs e)
@@ -101,11 +106,14 @@ namespace GameLauncher
             //MessageBox.Show(strCheckPassword);
 
 
-            bool blnConfirm = MessageBox.Show("Are you sure you want to delete your account?", "Delete Account", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            bool blnConfirm =
+                MessageBox.Show("Are you sure you want to delete your account?", "Delete Account",
+                    MessageBoxButton.YesNo) == MessageBoxResult.Yes;
             if (!blnConfirm)
             {
                 return;
             }
+
             MongoClient dbClient = new MongoClient(connectionUri);
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
             //convert string to ObjectId
@@ -162,12 +170,13 @@ namespace GameLauncher
 
         private void txtSearch_OnTextChange(object sender, TextChangedEventArgs e)
         {
-            
+
             if (txtSearch.Text == "Search" || txtSearch.Text.Trim() == "" || txtSearch.Text.Length < 1)
             {
                 pnlSearch.Height = 26;
                 return;
             }
+
             lstSearch.Items.Clear();
 
             foreach (Game game in games)
@@ -184,15 +193,16 @@ namespace GameLauncher
                     else
                     {
                         Array.Resize(ref intSearchindex, lstSearch.Items.Count);
-                    }   
-                    intSearchindex[lstSearch.Items.Count-1] = (games.IndexOf(game));
+                    }
+
+                    intSearchindex[lstSearch.Items.Count - 1] = (games.IndexOf(game));
                 }
             }
 
-            MessageBox.Show(intSearchindex.Count().ToString());
+            //MessageBox.Show(intSearchindex.Count().ToString());
 
             pnlSearch.Height = 26 + (lstSearch.Items.Count * 26);
-            
+
         }
 
         public struct Game
@@ -206,8 +216,15 @@ namespace GameLauncher
                 this.id = id;
             }
 
-            public string Name { get => name; }
-            public string Id { get => id; }
+            public string Name
+            {
+                get => name;
+            }
+
+            public string Id
+            {
+                get => id;
+            }
         }
 
         private void Search_Selected(object sender, RoutedEventArgs e)
@@ -217,10 +234,15 @@ namespace GameLauncher
                 return;
             }
 
-            GoTo(new GameView(gameId: games[intSearchindex[lstSearch.SelectedIndex]].Id ));
+            GoTo(new GameView(gameId: games[intSearchindex[lstSearch.SelectedIndex]].Id, this));
             txtSearch.Text = "Search";
             lstSearch.Items.Clear();
             lstSearch.SelectedIndex = -1;
+        }
+
+        public string GetConnectionUri()
+        {
+            return connectionUri;
         }
     }
 }

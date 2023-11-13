@@ -194,7 +194,7 @@ namespace GameLauncher
                 return true;
             }
 
-            //check if the user entered anything but letters and
+            //check if the user entered anything but letters and numbers
             if (txtUsername.Text.Any(c => !char.IsLetterOrDigit(c)))
             {
                 MessageBox.Show("Please enter a valid username");
