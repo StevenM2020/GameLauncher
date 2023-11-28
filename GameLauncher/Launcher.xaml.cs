@@ -19,6 +19,8 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Configuration;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace GameLauncher
 {
@@ -36,7 +38,10 @@ namespace GameLauncher
         string strStore = "";
 
         List<Game> games = new List<Game>();
+        List<DownloadedGames> downloadedGames = new List<DownloadedGames>();
         private int[] intSearchindex;
+        string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads\\GameLauncherFiles\\";
+        string filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads\\GameLauncherFiles\\", "gamelauncherinfo.json");
 
         public Launcher(string strId, string strUsername)
         {
@@ -66,18 +71,37 @@ namespace GameLauncher
 
             foreach (var game in result)
             {
-                //MessageBox.Show(game["name"].ToString());
                 games.Add(new Game(game["_id"].ToString(), game["name"].ToString()));
             }
 
-            //scrLauncher.CanContentScroll = true;
-            ////scrLauncher.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            //scrLauncher.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            //scrLauncher.PanningMode = PanningMode.VerticalOnly;
-            //scrLauncher.PanningDeceleration = 0.001;
-            //scrLauncher.PanningRatio = 0.001;
 
 
+
+
+            // Check if the directory exists
+            if (!Directory.Exists(folderPath))
+            {
+                // If the directory does not exist, create it
+                Directory.CreateDirectory(folderPath);
+            }
+
+            // Check if the file exists
+            if (File.Exists(filePath))
+            {
+                // If the file exists, read it into downloadedGames
+                string json = File.ReadAllText(filePath);
+                // check if json is empty
+                if (json != "")
+                {
+                    downloadedGames = JsonConvert.DeserializeObject<List<DownloadedGames>>(json);
+                }
+                //downloadedGames = JsonConvert.DeserializeObject<List<DownloadedGames>>(json);
+            }
+            else
+            {
+                // If the file does not exist, create it
+                File.Create(filePath).Close();
+            }
         }
 
         // Replace column 1 with the new page
@@ -205,6 +229,87 @@ namespace GameLauncher
 
         }
 
+
+        public List<DownloadedGames> GetDownloadedGames()
+        {
+            // Check if the file exists
+            if (!File.Exists(filePath))
+            {
+                // If the file does not exist, return an empty list
+                return new List<DownloadedGames>();
+            }
+
+            // Read the file into downloadedGames
+            string json = File.ReadAllText(filePath);
+            return JsonConvert.DeserializeObject<List<DownloadedGames>>(json) ?? new List<DownloadedGames>();
+        }
+
+        public void UpdateDownloadedGames()
+        {
+            // Check if the file exists
+            if (!File.Exists(filePath))
+            {
+                // If the file does not exist, assign an empty list to downloadedGames
+                downloadedGames = new List<DownloadedGames>();
+                return;
+            }
+
+            // Read the file into downloadedGames
+            string json = File.ReadAllText(filePath);
+            downloadedGames = JsonConvert.DeserializeObject<List<DownloadedGames>>(json) ?? new List<DownloadedGames>();
+        }
+
+        public void AddDownloadedGame(string id, string name, string exeLocation)
+        {
+            downloadedGames.Add(new DownloadedGames(id, name, exeLocation));
+            // Check if the file exists
+            if (!File.Exists(filePath))
+            {
+                // If the file does not exist, create it
+                File.Create(filePath).Close();
+            }
+
+            // Write downloadedGames to the file
+            string json = JsonConvert.SerializeObject(downloadedGames);
+            File.WriteAllText(filePath, json);
+        }
+
+        // removes a downloaded game from the list
+        public void RemoveDownloadedGame(string id)
+        {
+            downloadedGames.RemoveAll(x => x.Id == id);
+            // Check if the file exists
+            if (!File.Exists(filePath))
+            {
+                // If the file does not exist, create it
+                File.Create(filePath).Close();
+            }
+
+            // Write downloadedGames to the file
+            string json = JsonConvert.SerializeObject(downloadedGames);
+            File.WriteAllText(filePath, json);
+        }
+
+        // goes to the selected game page
+        private void Search_Selected(object sender, RoutedEventArgs e)
+        {
+            if (txtSearch.Text == "Search" || txtSearch.Text.Trim() == "" || txtSearch.Text.Length < 1)
+            {
+                return;
+            }
+
+            GoTo(new GameView(gameId: games[intSearchindex[lstSearch.SelectedIndex]].Id, this));
+            txtSearch.Text = "Search";
+            lstSearch.Items.Clear();
+            lstSearch.SelectedIndex = -1;
+        }
+
+        public string GetConnectionUri()
+        {
+            return connectionUri;
+        }
+
+
         public struct Game
         {
             private string name;
@@ -227,22 +332,33 @@ namespace GameLauncher
             }
         }
 
-        private void Search_Selected(object sender, RoutedEventArgs e)
+        public struct DownloadedGames
         {
-            if (txtSearch.Text == "Search" || txtSearch.Text.Trim() == "" || txtSearch.Text.Length < 1)
+            private string name;
+            private string id;
+            private string exeLocation;
+
+            public DownloadedGames(string id, string name, string exeLocation)
             {
-                return;
+                this.name = name;
+                this.id = id;
+                this.exeLocation = exeLocation;
             }
 
-            GoTo(new GameView(gameId: games[intSearchindex[lstSearch.SelectedIndex]].Id, this));
-            txtSearch.Text = "Search";
-            lstSearch.Items.Clear();
-            lstSearch.SelectedIndex = -1;
-        }
+            public string Name
+            {
+                get => name;
+            }
 
-        public string GetConnectionUri()
-        {
-            return connectionUri;
+            public string Id
+            {
+                get => id;
+            }
+
+            public string ExeLocation
+            {
+                get => exeLocation;
+            }
         }
     }
 }

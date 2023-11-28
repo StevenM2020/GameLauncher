@@ -27,7 +27,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Label Content="Game Name" Name="lblGameName" HorizontalAlignment="Left" Margin="17,297,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16" FontWeight="Bold" Width="283"/>
+        <Label Content="Game Name" Name="lblGameName" HorizontalAlignment="Left" Margin="14,297,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16" FontWeight="Bold" Width="283"/>
         <TextBlock Name="lblDescription" HorizontalAlignment="Center" Margin="0,337,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="140" Width="646" Foreground="White"/>
         <StackPanel Name="pnlGameProperties" Margin="429,30,19,171">
         </StackPanel>

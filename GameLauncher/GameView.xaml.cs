@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Newtonsoft.Json;
 
 
 namespace GameLauncher
@@ -31,16 +32,24 @@ namespace GameLauncher
         string fileName = "game.zip";
         string downloadPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", "game.zip");
         private string gameDownloadURL = "";
+        string gameExe = "";
+        Launcher launcher;
 
+        private List<Launcher.DownloadedGames> downloadedGames;
+
+#region load GameView
         public GameView(string gameId, Launcher launcher)
         {
             InitializeComponent();
 
             this.gameId = ObjectId.Parse(gameId);
             connectionUri = launcher.GetConnectionUri();
+            this.launcher = launcher;
 
             try
             {
+
+
                 // Connect to database
                 MongoClient dbClient = new MongoClient(connectionUri);
 
@@ -59,7 +68,6 @@ namespace GameLauncher
                 // Set game image
                 try
                 {
-
                     BitmapImage gameImage = new BitmapImage(new Uri(result[0]["images"][0].ToString()));
                     imgGame.Source = gameImage;
                 }
@@ -68,10 +76,39 @@ namespace GameLauncher
                     Debug.WriteLine("ERROR: missing image \n" + e);
                 }
 
+                // Set game download URL
+                try
+                {
+                    gameDownloadURL = result[0]["downloadURL"].ToString();
+                }
+                catch (Exception e)
+                {
+                    
+                    // If there is no download URL then the game is not available and the button will be disabled
+                    btnInstall.Content = "No download available";
+                    btnInstall.Width = 200;
+                    btnInstall.Background = Brushes.Red;
+                    btnInstall.Clip = new RectangleGeometry(new Rect(5, 0, 190, 29), 5.0, 5.0);
+                    btnInstall.Margin = new Thickness(btnInstall.Margin.Left - 100, btnInstall.Margin.Top, btnInstall.Margin.Right, btnInstall.Margin.Bottom);
+                    btnInstall.Cursor = Cursors.Arrow;
+                    btnInstall.Click -= btnInstall_Click;
+
+
+                    Debug.WriteLine("ERROR: missing description \n" + e);
+                }
+
                 // Set game name
                 try
                 {
-                    lblGameName.Content = result[0]["name"].ToString();
+                    // limit the length of the game name to 25 characters if game is not available
+                    if (result[0]["name"].ToString().Length > 25 && result[0]["name"].ToString() != "No name available")
+                    {
+                        lblGameName.Content = result[0]["name"].ToString().Substring(0, 25);
+                    }
+                    else
+                    {
+                        lblGameName.Content = result[0]["name"].ToString();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -91,26 +128,6 @@ namespace GameLauncher
                     Debug.WriteLine("ERROR: missing description \n" + e);
                 }
 
-                // Set game description
-                try
-                {
-                    gameDownloadURL = result[0]["downloadURL"].ToString();
-                }
-                catch (Exception e)
-                {
-                    isInstalling = true;
-
-                    btnInstall.Content = "No download available";
-                    btnInstall.Width = 200;
-                    btnInstall.Background = Brushes.Red;
-                    btnInstall.Clip = new RectangleGeometry(new Rect(5, 0, 190, 29), 5.0, 5.0);
-                    btnInstall.Margin = new Thickness(btnInstall.Margin.Left - 100, btnInstall.Margin.Top, btnInstall.Margin.Right, btnInstall.Margin.Bottom);
-
-
-
-
-                    Debug.WriteLine("ERROR: missing description \n" + e);
-                }
 
                 // Set game properties
                 try
@@ -139,9 +156,34 @@ namespace GameLauncher
                 Debug.WriteLine("ERROR: could not connect to database \n" + e);
                 MessageBox.Show("Could not connect to database");
             }
-        }
 
+            // get list of downloaded games from JSON file
+            downloadedGames = launcher.GetDownloadedGames();
+
+            // Check if the game is already downloaded
+            if (downloadedGames.Any(game => game.Id == gameId.ToString()))
+            {
+                // If the game is downloaded then it is already installed so change the button text to "Open" and set the exe location
+                btnInstall.Content = "Open";
+                btnInstall.Cursor = Cursors.Hand;
+                btnInstall.Background = Brushes.Green;
+
+                // get the game exe location
+                gameExe = downloadedGames.Find(game => game.Id == gameId.ToString()).ExeLocation;
+                MessageBox.Show(gameExe);
+
+                btnInstall.Click -= btnInstall_Click;
+                btnInstall.Click += btnOpen_Click;
+
+            }
+
+
+        }
+#endregion
+
+#region Install Game
         bool isInstalling = false;
+        string exeLocation = "";
         private async void btnInstall_Click(object sender, RoutedEventArgs e)
         {
             if (isInstalling)
@@ -149,6 +191,7 @@ namespace GameLauncher
                 return;
             }
             isInstalling = true;
+
             try
             {
                 btnInstall.Content = "Installing...";
@@ -185,8 +228,9 @@ namespace GameLauncher
                 {
                     Directory.CreateDirectory(gameLauncherFilesPath);
                 }
-                
 
+
+                // download the game
                 using (WebClient client = new WebClient())
                 {
                     try
@@ -210,12 +254,13 @@ namespace GameLauncher
                     {
                         MessageBox.Show("unzip failed");
                     }
-
+                    
+                    // opens the game exe
                     try
                     {
                         // find the game exe
                         string[] files = Directory.GetFiles(gameLauncherFilesPath + eFolder, "*.exe", SearchOption.AllDirectories);
-                        string gameExe = files[0];
+                        gameExe = files[0];
                         // open the game exe
                         Process.Start(gameExe);
                     }
@@ -227,14 +272,44 @@ namespace GameLauncher
 
                 }
 
-                btnInstall.Content = "Installed";
+                // set exe location
+                exeLocation = gameLauncherFilesPath + eFolder + gameExe;
+
+                // Check if the game is already downloaded
+                if (!downloadedGames.Any(game => game.Id == gameId.ToString()))
+                {
+                    // If the game is not downloaded, add its information to downloadedGames
+                    downloadedGames.Add(new Launcher.DownloadedGames(gameId.ToString(), lblGameName.Content.ToString(), gameExe));
+
+                    // Save downloadedGames back to the JSON file (id, name, exeLocation)
+                    launcher.AddDownloadedGame(gameId.ToString(), lblGameName.Content.ToString(), gameExe);
+                }
+
+                // change the button text and color
+                btnInstall.Content = "Open";
                 btnInstall.Cursor = Cursors.Hand;
+                btnInstall.Background = Brushes.Green;
+
+                // change the button click event to open the game
+                btnInstall.Click -= btnInstall_Click;
+                btnInstall.Click += btnOpen_Click;
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("ERROR: could not connect to database \n" + ex);
                 MessageBox.Show("Could not connect to database");
             }
+        }
+#endregion
+
+        private void btnOpen_Click(object sender, RoutedEventArgs e)
+        {
+            // check if the game exe exists and open it
+            if (File.Exists(gameExe))
+                Process.Start(gameExe);
+            else
+                MessageBox.Show("Game not found");
         }
  
       

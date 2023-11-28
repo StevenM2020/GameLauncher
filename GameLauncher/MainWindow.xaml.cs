@@ -91,6 +91,7 @@ namespace GameLauncher
             return;
 
         }
+
         private void btnSignUp_Click(object sender, RoutedEventArgs e)
         {
             if(blnEye)
@@ -100,6 +101,7 @@ namespace GameLauncher
 
             // Connect to the database
             MongoClient dbClient = new MongoClient(connectionUri);
+
             // Get the collection of users and filter by username
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
             var filter = Builders<BsonDocument>.Filter.Eq("username", txtUsername.Text);
@@ -230,7 +232,6 @@ namespace GameLauncher
                     txtPassword.CaretIndex = txtPassword.Text.Length;
                 }
             }
-            Label.Content = strPassword;
 
 
         }
@@ -257,23 +258,17 @@ namespace GameLauncher
         private void btnAgree_Click(object sender, RoutedEventArgs e)
         {
             MongoClient dbClient = new MongoClient(connectionUri);
+
             // Create a new document and insert it into the database
             var database = dbClient.GetDatabase("GameLauncher");
             var collection = database.GetCollection<BsonDocument>("Users");
 
-
-            //var salt = RandomNumberGenerator.GetBytes(32);
-            // reliable salt
-            //for (int i = 0; i < 32; i++)
-            //{
-            //    salt[i] = 0;
-            //}
-
+            // hash the password
             var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(strPassword, salt, iterations, hashAlgorithm, keySize);
-            //MessageBox.Show(Convert.ToHexString(hashedPassword));
 
             // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
 
+            // the document to be inserted into the database
             var document = new BsonDocument
             {
                 {"username", txtUsername.Text},
