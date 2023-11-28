@@ -170,7 +170,6 @@ namespace GameLauncher
 
                 // get the game exe location
                 gameExe = downloadedGames.Find(game => game.Id == gameId.ToString()).ExeLocation;
-                MessageBox.Show(gameExe);
 
                 btnInstall.Click -= btnInstall_Click;
                 btnInstall.Click += btnOpen_Click;
@@ -220,8 +219,7 @@ namespace GameLauncher
                 string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads\\";
                 string fileName2 = lblGameName.Content + ".zip";
                 string eFolder = @"\" + lblGameName.Content;
-                //string url = "https://public.bn.files.1drv.com/y4mqmZnSNqfe1t_FL2HzgAN5BD735Ln-8kgmCoUGe1Lx1Is_WIXvO4MdJl1-8y2UmAf9GItbkncblRpsGGz5Q730f5bKYszYdpyEG7DwWazVqvxXFr7fK6P6XVKZZq3tlBDu7r_GZBneKqeUFSYa3mAl3rLUc3BOj9ehmfCSXhZhtgwICaz2GsPR6Vbwhebe8SlQDuXJ4XPtfnWjruHyJJ-59-9Eq2Knog3lCCY9-Owpd0?AVOverride=1";
-                
+  
                 string gameLauncherFilesPath = downloadsPath + "GameLauncherFiles\\";
 
                 if (!Directory.Exists(gameLauncherFilesPath))

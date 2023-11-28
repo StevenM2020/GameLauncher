@@ -46,7 +46,6 @@ namespace GameLauncher
         public Launcher(string strId, string strUsername)
         {
             InitializeComponent();
-            //string connectionUri = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             // Set store page as default
             GoTo(new Store(this));
             currentPage = (new Store(this)).Title;
@@ -54,9 +53,7 @@ namespace GameLauncher
             somethingFrame.NavigationUIVisibility = NavigationUIVisibility.Hidden;
 
             lblUsername.Content = "Welcome, " + strUsername;
-            //lblUsernameChar.Content = strUsername.First().ToString();
 
-            //MessageBox.Show("Welcome, " + strId);
             this.strId = strId;
 
 
@@ -66,15 +63,11 @@ namespace GameLauncher
             var filter = Builders<BsonDocument>.Filter.Empty;
             var result = dbList.Find(filter).ToList();
 
-            //MessageBox.Show(result.Count.ToString());
-
 
             foreach (var game in result)
             {
                 games.Add(new Game(game["_id"].ToString(), game["name"].ToString()));
             }
-
-
 
 
 
@@ -95,7 +88,6 @@ namespace GameLauncher
                 {
                     downloadedGames = JsonConvert.DeserializeObject<List<DownloadedGames>>(json);
                 }
-                //downloadedGames = JsonConvert.DeserializeObject<List<DownloadedGames>>(json);
             }
             else
             {
@@ -126,8 +118,6 @@ namespace GameLauncher
 
         private void DeleteAccount_Click(object sender, MouseButtonEventArgs e)
         {
-            //string strCheckPassword = Microsoft.VisualBasic.Interaction.InputBox("Please enter your password to confirm", "Delete Account", "");
-            //MessageBox.Show(strCheckPassword);
 
 
             bool blnConfirm =
@@ -151,11 +141,6 @@ namespace GameLauncher
                 this.Close();
             }
             // https://www.mongodb.com/docs/drivers/csharp/current/usage-examples/deleteOne/
-
-            //MessageBox.Show("broken");
-            // var filter = Builders<Restaurant>.Filter
-            // .Eq(r => r.Name, "Ready Penny Inn");
-            //return await _restaurantsCollection.DeleteOneAsync(filter);
 
         }
 
@@ -222,8 +207,6 @@ namespace GameLauncher
                     intSearchindex[lstSearch.Items.Count - 1] = (games.IndexOf(game));
                 }
             }
-
-            //MessageBox.Show(intSearchindex.Count().ToString());
 
             pnlSearch.Height = 26 + (lstSearch.Items.Count * 26);
 

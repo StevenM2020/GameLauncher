@@ -59,7 +59,6 @@ namespace GameLauncher
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Users");
             var filter = Builders<BsonDocument>.Filter.Eq("username", txtUsername.Text);
             var result = dbList.Find(filter).ToList();
-            //MessageBox.Show(result[0]["password"].ToString());
 
             var hashedPassword = Rfc2898DeriveBytes.Pbkdf2(strPassword, salt, iterations, hashAlgorithm, keySize);
 
@@ -71,13 +70,13 @@ namespace GameLauncher
                 }
                 else
                 {
-                    MessageBox.Show("Incorrect Password, " + Convert.ToHexString(hashedPassword));
+                    MessageBox.Show("Incorrect Information");
                     return;
                 }
             }
             else // if the username is not found
             {
-                MessageBox.Show("Incorrect Username");
+                MessageBox.Show("Incorrect Information");
                 return;
             }
 
@@ -211,7 +210,6 @@ namespace GameLauncher
 
             // https://stackoverflow.com/questions/76413133/char-check-that-contains-letters-and-digits
             // https://learn.microsoft.com/en-us/dotnet/api/system.char.isletterordigit?view=net-7.0
-            // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions
             return false;
         }
 

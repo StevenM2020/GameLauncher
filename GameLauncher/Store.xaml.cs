@@ -37,10 +37,8 @@ namespace GameLauncher
             // Get the collection of users and filter by username
             var dbList = dbClient.GetDatabase("GameLauncher").GetCollection<BsonDocument>("Games");
 
-            //MessageBox.Show(dbList.Find(new BsonDocument()).ToList().Count.ToString());
 
             int intNumGames = dbList.Find(new BsonDocument()).ToList().Count;
-            //MessageBox.Show(intNumGames + "num games");
 
             int intGamesLeft = intNumGames;
 
@@ -129,24 +127,7 @@ namespace GameLauncher
                 }
             }
 
-            // Get the featured games
-                //var filter = Builders<BsonDocument>.Filter.Eq("Featured", true);
-                //var result = dbList.Find(filter).ToList();
 
-                //if (result.Count == 0)
-                //{
-                //   // MessageBox.Show("no featured games");
-                //   // return;
-                //}
-
-                //foreach (var game in result)
-                //{
-
-                //}
-
-                //this.Content = new SignUp();
-                // https://stackoverflow.com/questions/10196445/switch-views-in-same-window-wpf-without-creating-new-instances-of-the-pages#:~:text=Much%20easier%20way%20would%20be%3A%201%20Use%20MainWindow,instances%29.%204%20Use%20MainWindow.SetPage%20%28Pages.First%29%20to%20change%20pages.
-            
         }
 
         public void SetPage(Page page)
@@ -174,9 +155,6 @@ namespace GameLauncher
         private void SelectGame(object sender, RoutedEventArgs e)
         {
             var imgGame = (System.Windows.Controls.Image)sender;
-            //MessageBox.Show(imgGame.Tag.ToString());
-
-            //this.Content = new GameView();
 
             
             launcher.GoTo(new GameView(gameId: imgGame.Tag.ToString(), launcher));
